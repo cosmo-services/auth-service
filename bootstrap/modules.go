@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"main/internal/api"
+	"main/internal/infrastructure"
 
 	"main/internal/config"
 	"main/pkg"
@@ -13,4 +14,5 @@ var CommonModules = fx.Options(
 	config.Module,
 	pkg.Module,
 	api.Module,
+	infrastructure.Module,
 )
