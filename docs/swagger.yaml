@@ -1,0 +1,28 @@
+info:
+  contact: {}
+  title: Cosmo Auth API
+  version: "1.0"
+paths:
+  /api/v1/ping:
+    get:
+      consumes:
+      - application/json
+      description: Check if the service is alive
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Ping endpoint
+      tags:
+      - health
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
