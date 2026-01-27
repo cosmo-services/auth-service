@@ -1,4 +1,3 @@
-// internal/repository/postgres/user.go
 package infrastructure
 
 import (
@@ -8,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"main/internal/domain"
+	domain "main/internal/domain/user"
 	"main/pkg"
 )
 

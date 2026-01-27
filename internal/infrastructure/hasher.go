@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"main/internal/domain"
+	"main/internal/domain/password"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -17,7 +17,7 @@ type BcryptPasswordHasher struct {
 	cost int
 }
 
-func NewBcryptPasswordHasher(cost int) domain.PasswordHasher {
+func NewBcryptPasswordHasher(cost int) password.PasswordHasher {
 	return &BcryptPasswordHasher{
 		cost: DefaultCost,
 	}
