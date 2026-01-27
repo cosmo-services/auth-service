@@ -5,7 +5,8 @@ import "time"
 type User struct {
 	ID           string `json:"id"`
 	Username     string `json:"username"`
-	PasswordHash string `json:"password_hash"`
+	PasswordHash string `json:"-"`
+	Email        string `json:"email"`
 	IsActive     bool   `json:"is_active"`
 	IsDeleted    bool   `json:"is_deleted"`
 
