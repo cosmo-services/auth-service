@@ -1,6 +1,24 @@
 version: '3.8'
 
 services:
+  auth-migrate:
+    image: migrate/migrate
+    env_file:
+      - .env
+    volumes:
+      - ./migrations:/migrations
+    command: [
+      "-path", "/migrations",
+      "-database", "postgres://${PG_USER}:${PG_PASS}@postgres:5432/${PG_NAME}?sslmode=disable",
+      "up"
+    ]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+    networks:
+      - app-network
+    
   auth-api:
     build: .
     ports:

@@ -1,3 +1,13 @@
+definitions:
+  user.UserRegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
 info:
   contact: {}
   title: Cosmo Auth API
@@ -20,6 +30,36 @@ paths:
       summary: Ping endpoint
       tags:
       - health
+  /api/v1/user/register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user account with email, password and optional username
+      parameters:
+      - description: User registration request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/user.UserRegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful registration
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid request or validation error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Register a new user
+      tags:
+      - auth
 securityDefinitions:
   BearerAuth:
     in: header

@@ -14,7 +14,7 @@ ENV CONFIG_PATH=./config.yaml
 COPY . .
 
 # Собираем приложение
-RUN go build -o main .
+#RUN go build -o main .
 
 # Открываем порт (если приложение использует сеть)
 EXPOSE 8080

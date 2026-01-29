@@ -20,7 +20,7 @@ func NewUserService(
 	}
 }
 
-func (s *UserService) Register(userRequest *UserCreateRequest) error {
+func (s *UserService) Register(userRequest *UserRegisterRequest) error {
 	usernameAvailable, err := s.userRepo.IsUsernameAvailable(userRequest.Username)
 	if err != nil {
 		return err
