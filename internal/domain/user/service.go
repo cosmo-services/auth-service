@@ -20,8 +20,8 @@ func NewUserService(
 	}
 }
 
-func (s *UserService) Register(userRequest *UserRegisterRequest) error {
-	usernameAvailable, err := s.userRepo.IsUsernameAvailable(userRequest.Username)
+func (s *UserService) Register(username string, password string, email string) error {
+	usernameAvailable, err := s.userRepo.IsUsernameAvailable(username)
 	if err != nil {
 		return err
 	}
@@ -29,7 +29,7 @@ func (s *UserService) Register(userRequest *UserRegisterRequest) error {
 		return ErrUsernameAlreadyTaken
 	}
 
-	emailAvailable, err := s.userRepo.IsEmailAvailable(userRequest.Email)
+	emailAvailable, err := s.userRepo.IsEmailAvailable(email)
 	if err != nil {
 		return err
 	}
@@ -37,16 +37,16 @@ func (s *UserService) Register(userRequest *UserRegisterRequest) error {
 		return ErrEmailAlreadyTaken
 	}
 
-	passwordHash, err := s.pswdService.HashPassword(userRequest.Password)
+	passwordHash, err := s.pswdService.HashPassword(password)
 	if err != nil {
 		return err
 	}
 
 	now := time.Now()
 	user := &User{
-		Username:     userRequest.Username,
+		Username:     username,
 		PasswordHash: passwordHash,
-		Email:        userRequest.Email,
+		Email:        email,
 		IsActive:     false,
 		IsDeleted:    false,
 		CreatedAt:    now,

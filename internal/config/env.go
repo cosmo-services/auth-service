@@ -20,7 +20,7 @@ type Env struct {
 	PGPass string `mapstructure:"PG_PASS"`
 	PGName string `mapstructure:"PG_NAME"`
 
-	JwtSecreet    string        `mapstructure:"JWT_SECRET"`
+	JwtSecret     string        `mapstructure:"JWT_SECRET"`
 	JwtAccessTTL  time.Duration `mapstructure:"JWT_ACCESS_TTL"`
 	JwtRefreshTTL time.Duration `mapstructure:"JWT_REFRESH_TTL"`
 
@@ -68,7 +68,7 @@ func (e *Env) bindEnv() {
 	e.PGPass = os.Getenv("PG_PASS")
 	e.PGName = os.Getenv("PG_NAME")
 
-	e.JwtSecreet = os.Getenv("JWT_SECRET")
+	e.JwtSecret = os.Getenv("JWT_SECRET")
 
 	if val := os.Getenv("JWT_ACCESS_TTL"); val != "" {
 		d, err := time.ParseDuration(val)

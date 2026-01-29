@@ -23,7 +23,7 @@ func NewAuthService(
 	}
 }
 
-func (s *AuthService) Login(username string, password string) (*AccessToken, error) {
+func (s *AuthService) Login(username string, password string) (*TokenPair, error) {
 	user, err := s.userRepo.GetByUsername(username)
 	if err != nil {
 		return nil, err
@@ -37,7 +37,30 @@ func (s *AuthService) Login(username string, password string) (*AccessToken, err
 		return nil, ErrInvalidCredentials
 	}
 
-	token, err := s.jwtService.GenerateToken(user.ID)
+	token, err := s.jwtService.GenerateTokenPair(user.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return token, nil
+}
+
+func (s *AuthService) Refresh(refreshToken string) (*TokenPair, error) {
+	userId, err := s.jwtService.ValidateToken(refreshToken)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := s.userRepo.GetByID(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	if !user.IsActive {
+		return nil, ErrInactiveUser
+	}
+
+	token, err := s.jwtService.GenerateTokenPair(user.ID)
 	if err != nil {
 		return nil, err
 	}

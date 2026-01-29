@@ -2,7 +2,7 @@ package auth
 
 import "time"
 
-type AccessToken struct {
+type TokenPair struct {
 	Access  JwtToken `json:"access_token"`
 	Refresh JwtToken `json:"refresh_token"`
 }
