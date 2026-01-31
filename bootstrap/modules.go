@@ -7,6 +7,7 @@ import (
 
 	auth_infrastructure "main/internal/infrastructure/auth"
 	password_infrastructure "main/internal/infrastructure/password"
+	tokens_infrastructure "main/internal/infrastructure/tokens"
 	user_infrastructure "main/internal/infrastructure/user"
 
 	auth_application "main/internal/application/auth"
@@ -16,6 +17,7 @@ import (
 
 	auth_domain "main/internal/domain/auth"
 	password_domain "main/internal/domain/password"
+	tokens_domain "main/internal/domain/tokens"
 	user_domain "main/internal/domain/user"
 
 	"go.uber.org/fx"
@@ -28,6 +30,7 @@ var CommonModules = fx.Options(
 	password_infrastructure.Module,
 	user_infrastructure.Module,
 	auth_infrastructure.Module,
+	tokens_infrastructure.Module,
 
 	application.Module,
 	ping_application.Module,
@@ -38,4 +41,5 @@ var CommonModules = fx.Options(
 	user_domain.Module,
 	password_domain.Module,
 	auth_domain.Module,
+	tokens_domain.Module,
 )

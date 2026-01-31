@@ -73,6 +73,33 @@ paths:
       summary: Ping endpoint
       tags:
       - health
+  /api/v1/user/activate:
+    get:
+      description: Activate user account using verification token from email
+      parameters:
+      - description: Activation token from email
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User activated successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Token parameter is missing or invalid
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Activate user account
+      tags:
+      - auth
   /api/v1/user/register:
     post:
       consumes:

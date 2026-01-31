@@ -23,5 +23,5 @@ func (r *UserRoutes) Setup() {
 	group := r.handler.Gin.Group("/api/v1/user")
 
 	group.POST("/register", r.userController.Register)
-	group.POST("/activate", r.userController.Activate)
+	group.GET("/activate", r.userController.Activate)
 }

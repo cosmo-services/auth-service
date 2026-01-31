@@ -3,12 +3,14 @@ package infrastructure
 import (
 	"main/internal/config"
 	"main/internal/domain/user"
+	"main/pkg"
 	"strconv"
 
 	"gopkg.in/gomail.v2"
 )
 
 type GmailService struct {
+	logger    pkg.Logger
 	fromEmail string
 	appPass   string
 	appDomain string
@@ -16,7 +18,7 @@ type GmailService struct {
 	port      int
 }
 
-func NewGmailService(env config.Env) user.EmailService {
+func NewGmailService(env config.Env, logger pkg.Logger) user.EmailService {
 	port, _ := strconv.Atoi(env.GmailPort)
 	return &GmailService{
 		fromEmail: env.GmailFrom,
@@ -24,15 +26,17 @@ func NewGmailService(env config.Env) user.EmailService {
 		appDomain: env.AppDomain,
 		smtp:      env.GmailSMTP,
 		port:      port,
+		logger:    logger,
 	}
 }
 
 func (s *GmailService) SendToken(token string, email string) error {
+	s.logger.Info("token: " + token)
 	m := gomail.NewMessage()
 	m.SetHeader("From", "NoReply <"+s.fromEmail+">")
 	m.SetHeader("To", email)
 	m.SetHeader("Subject", "Account activation")
-	activationLink := s.appDomain + "/verify?token=" + token
+	activationLink := s.appDomain + "/api/v1/user/activate?token=" + token
 	htmlBody := s.getEmailBody(activationLink)
 	m.SetBody("text/html", htmlBody)
 
@@ -54,8 +58,7 @@ func (s *GmailService) getEmailBody(activationLink string) string {
   <title>Подтверждение email</title>
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-  <p>Привет!</p>
-  <p>Пожалуйста, подтвердите ваш email, нажав на кнопку ниже:</p>
+  <p>Пожалуйста, подтвердите ваш email, чтобы активировать аккаунт.</p>
   
   <a href="` + activationLink + `" 
      style="display: inline-block; 
@@ -66,7 +69,7 @@ func (s *GmailService) getEmailBody(activationLink string) string {
             border-radius: 4px; 
             font-weight: bold; 
             margin: 16px 0;">
-    Verify email
+    Подтвердить
   </a>
 
   <hr style="margin: 32px 0; border: 0; border-top: 1px solid #eee;">
