@@ -13,3 +13,17 @@ type User struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
+
+func (u *User) Activate() error {
+	if u.IsDeleted {
+		return ErrActivateDeleted
+	}
+
+	if u.IsActive {
+		return ErrAlreadyActivated
+	}
+
+	u.IsActive = true
+
+	return nil
+}

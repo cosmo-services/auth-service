@@ -2,21 +2,31 @@ package user
 
 import (
 	"main/internal/domain/password"
+	"main/internal/domain/tokens"
 	"time"
 )
 
 type UserService struct {
-	userRepo    UserRepository
-	pswdService *password.PasswordService
+	userRepo     UserRepository
+	pswdService  *password.PasswordService
+	tokenService *tokens.TokenService
+	publisher    Publisher
+	emailService EmailService
 }
 
 func NewUserService(
 	userRepo UserRepository,
 	pswdService *password.PasswordService,
+	tokenService *tokens.TokenService,
+	publisher Publisher,
+	emailService EmailService,
 ) *UserService {
 	return &UserService{
-		userRepo:    userRepo,
-		pswdService: pswdService,
+		userRepo:     userRepo,
+		pswdService:  pswdService,
+		tokenService: tokenService,
+		publisher:    publisher,
+		emailService: emailService,
 	}
 }
 
@@ -54,6 +64,41 @@ func (s *UserService) Register(username string, password string, email string) e
 	}
 
 	if err := s.userRepo.Create(user); err != nil {
+		return err
+	}
+
+	token, err := s.tokenService.RequestToken(user.ID, tokens.PurposeVerifyEmail)
+	if err != nil {
+		return err
+	}
+
+	if err := s.emailService.SendToken(token.TokenStr, user.Email); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *UserService) Activate(tokenStr string) error {
+	token, err := s.tokenService.UseToken(tokenStr)
+	if err != nil {
+		return err
+	}
+
+	user, err := s.userRepo.GetByID(token.UserID)
+	if err != nil {
+		return err
+	}
+
+	if err := user.Activate(); err != nil {
+		return err
+	}
+
+	if err := s.userRepo.Update(user); err != nil {
+		return err
+	}
+
+	if err := s.publisher.UserActivated(token.UserID); err != nil {
 		return err
 	}
 
