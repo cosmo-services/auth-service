@@ -20,6 +20,10 @@ type Env struct {
 	PGPass string `mapstructure:"PG_PASS"`
 	PGName string `mapstructure:"PG_NAME"`
 
+	GmailPass string `mapstructure:"GMAIL_PASS"`
+	GmailFrom string `mapstructure:"GMAIL_FROM"`
+	AppDomain string `mapstructure:"APP_DOMAIN"`
+
 	JwtSecret     string        `mapstructure:"JWT_SECRET"`
 	JwtAccessTTL  time.Duration `mapstructure:"JWT_ACCESS_TTL"`
 	JwtRefreshTTL time.Duration `mapstructure:"JWT_REFRESH_TTL"`
@@ -67,6 +71,10 @@ func (e *Env) bindEnv() {
 	e.PGUser = os.Getenv("PG_USER")
 	e.PGPass = os.Getenv("PG_PASS")
 	e.PGName = os.Getenv("PG_NAME")
+
+	e.GmailPass = os.Getenv("GMAIL_PASS")
+	e.GmailFrom = os.Getenv("GMAIL_FROM")
+	e.AppDomain = os.Getenv("APP_DOMAIN")
 
 	e.JwtSecret = os.Getenv("JWT_SECRET")
 

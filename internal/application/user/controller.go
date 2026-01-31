@@ -55,3 +55,33 @@ func (controller *UserController) Register(ctx *gin.Context) {
 		"username", req.Username,
 	)
 }
+
+// Activate godoc
+//
+// @Summary Activate user account
+// @Description Activate user account using verification token from email
+// @Tags auth
+// @Produce json
+// @Param token query string true "Activation token from email"
+// @Success 200 {object} map[string]string "User activated successfully"
+// @Failure 400 {object} map[string]string "Token parameter is missing or invalid"
+// @Router /api/v1/user/activate [get]
+func (controller *UserController) Activate(ctx *gin.Context) {
+	tokenStr, ok := ctx.GetQuery("token")
+	if !ok {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "token param is required"})
+
+		return
+	}
+
+	if err := controller.service.Activate(tokenStr); err != nil {
+		controller.logger.Error(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "user activated successfully",
+	})
+}
