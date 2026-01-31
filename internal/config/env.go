@@ -22,6 +22,8 @@ type Env struct {
 
 	GmailPass string `mapstructure:"GMAIL_PASS"`
 	GmailFrom string `mapstructure:"GMAIL_FROM"`
+	GmailPort string `mapstructure:"GMAIL_PORT"`
+	GmailSMTP string `mapstructure:"GMAIL_SMTP"`
 	AppDomain string `mapstructure:"APP_DOMAIN"`
 
 	JwtSecret     string        `mapstructure:"JWT_SECRET"`
@@ -74,6 +76,8 @@ func (e *Env) bindEnv() {
 
 	e.GmailPass = os.Getenv("GMAIL_PASS")
 	e.GmailFrom = os.Getenv("GMAIL_FROM")
+	e.GmailPort = os.Getenv("GMAIL_PORT")
+	e.GmailSMTP = os.Getenv("GMAIL_SMTP")
 	e.AppDomain = os.Getenv("APP_DOMAIN")
 
 	e.JwtSecret = os.Getenv("JWT_SECRET")
