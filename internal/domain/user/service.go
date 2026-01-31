@@ -67,6 +67,14 @@ func (s *UserService) Register(username string, password string, email string) e
 		return err
 	}
 
+	if err := s.RequestActivation(user); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *UserService) RequestActivation(user *User) error {
 	token, err := s.tokenService.RequestToken(user.ID, tokens.PurposeVerifyEmail)
 	if err != nil {
 		return err

@@ -48,6 +48,17 @@ func (service *TokenService) UseToken(tokenStr string) (*TokenResult, error) {
 }
 
 func (service *TokenService) RequestToken(userId string, tokenType TokenPurpose) (*TokenRequest, error) {
+	existingToken, err := service.tokenRepo.FindByUserId(userId, tokenType)
+	if err != nil {
+		return nil, err
+	}
+
+	if existingToken != nil {
+		if err := service.tokenRepo.DeleteById(existingToken.ID); err != nil {
+			return nil, err
+		}
+	}
+
 	tokenStr, err := service.tokenGenerator.GenerateToken()
 	if err != nil {
 		return nil, err
@@ -74,4 +85,8 @@ func (service *TokenService) RequestToken(userId string, tokenType TokenPurpose)
 		UserID:   userId,
 		TokenStr: tokenStr,
 	}, nil
+}
+
+func (service *TokenService) ClearExpiredTokens() error {
+	return service.tokenRepo.DeleteExpired(time.Now())
 }
