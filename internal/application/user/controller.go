@@ -24,7 +24,7 @@ func NewUserController(service *domain.UserService, logger pkg.Logger) *UserCont
 //
 // @Summary Register a new user
 // @Description Register a new user account with email, password and optional username
-// @Tags auth
+// @Tags user
 // @Accept	json
 // @Produce json
 // @Param request body	UserRegisterRequest true "User registration request"
@@ -60,7 +60,7 @@ func (controller *UserController) Register(ctx *gin.Context) {
 //
 // @Summary Activate user account
 // @Description Activate user account using verification token from email
-// @Tags auth
+// @Tags user
 // @Produce json
 // @Param token query string true "Activation token from email"
 // @Success 200 {object} map[string]string "User activated successfully"
@@ -83,5 +83,30 @@ func (controller *UserController) Activate(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "user activated successfully",
+	})
+}
+
+// ResendActivation godoc
+//
+// @Summary Request activation email
+// @Description Request a new activation email to be sent to the user's email address.
+// @Tags user
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} map[string]string "Activation email sent successfully"
+// @Failure 400 {object} map[string]string "Invalid user ID or user not found"
+// @Router /api/v1/user/activate/resend [post]
+func (controller *UserController) ResendActivation(ctx *gin.Context) {
+	userId := ctx.GetString("user_id")
+
+	err := controller.service.ResendActivation(userId)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "message sent successfully",
 	})
 }

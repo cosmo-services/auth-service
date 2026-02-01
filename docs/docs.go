@@ -103,7 +103,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "user"
                 ],
                 "summary": "Activate user account",
                 "parameters": [
@@ -137,6 +137,43 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/user/activate/resend": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Request a new activation email to be sent to the user's email address.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Request activation email",
+                "responses": {
+                    "200": {
+                        "description": "Activation email sent successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid user ID or user not found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/user/register": {
             "post": {
                 "description": "Register a new user account with email, password and optional username",
@@ -147,7 +184,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "user"
                 ],
                 "summary": "Register a new user",
                 "parameters": [

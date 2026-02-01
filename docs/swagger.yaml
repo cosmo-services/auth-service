@@ -99,7 +99,30 @@ paths:
             type: object
       summary: Activate user account
       tags:
-      - auth
+      - user
+  /api/v1/user/activate/resend:
+    post:
+      description: Request a new activation email to be sent to the user's email address.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Activation email sent successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid user ID or user not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Request activation email
+      tags:
+      - user
   /api/v1/user/register:
     post:
       consumes:
@@ -129,7 +152,7 @@ paths:
             type: object
       summary: Register a new user
       tags:
-      - auth
+      - user
 securityDefinitions:
   BearerAuth:
     in: header

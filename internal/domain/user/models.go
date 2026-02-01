@@ -14,13 +14,21 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func (u *User) Activate() error {
+func (u *User) ValidateActivation() error {
 	if u.IsDeleted {
 		return ErrActivateDeleted
 	}
 
 	if u.IsActive {
 		return ErrAlreadyActivated
+	}
+
+	return nil
+}
+
+func (u *User) Activate() error {
+	if err := u.ValidateActivation(); err != nil {
+		return err
 	}
 
 	u.IsActive = true

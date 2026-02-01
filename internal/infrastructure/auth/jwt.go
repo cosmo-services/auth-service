@@ -11,7 +11,7 @@ import (
 )
 
 type JwtClaims struct {
-	UserID string `json:"user_id"`
+	Payload *domain.JwtPayload `json:"payload"`
 	jwt.RegisteredClaims
 }
 
@@ -29,15 +29,15 @@ func NewJwtService(env config.Env) domain.JwtService {
 	}
 }
 
-func (s *JwtService) GenerateTokenPair(userID string) (*domain.TokenPair, error) {
+func (s *JwtService) GenerateTokenPair(payload *domain.JwtPayload) (*domain.TokenPair, error) {
 	accessExpires := time.Now().Add(s.accessTTL)
-	accessToken, err := s.generateToken(userID, accessExpires)
+	accessToken, err := s.generateToken(payload, accessExpires)
 	if err != nil {
 		return nil, err
 	}
 
 	refreshExpires := time.Now().Add(s.refreshTTL)
-	refreshToken, err := s.generateToken(userID, refreshExpires)
+	refreshToken, err := s.generateToken(payload, refreshExpires)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func (s *JwtService) GenerateTokenPair(userID string) (*domain.TokenPair, error)
 	}, nil
 }
 
-func (s *JwtService) ValidateToken(tokenStr string) (string, error) {
+func (s *JwtService) ValidateToken(tokenStr string) (*domain.JwtPayload, error) {
 	token, err := jwt.ParseWithClaims(tokenStr, &JwtClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("unexpected signing method")
@@ -63,19 +63,19 @@ func (s *JwtService) ValidateToken(tokenStr string) (string, error) {
 	})
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	if claims, ok := token.Claims.(*JwtClaims); ok && token.Valid {
-		return claims.UserID, nil
+		return claims.Payload, nil
 	}
 
-	return "", errors.New("invalid token")
+	return nil, errors.New("invalid token")
 }
 
-func (s *JwtService) generateToken(userID string, expiresAt time.Time) (string, error) {
+func (s *JwtService) generateToken(payload *domain.JwtPayload, expiresAt time.Time) (string, error) {
 	claims := JwtClaims{
-		UserID: userID,
+		Payload: payload,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expiresAt),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

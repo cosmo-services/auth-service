@@ -67,20 +67,24 @@ func (s *UserService) Register(username string, password string, email string) e
 		return err
 	}
 
-	if err := s.RequestActivation(user); err != nil {
+	if err := s.sendActivationEmail(user); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (s *UserService) RequestActivation(user *User) error {
-	token, err := s.tokenService.RequestToken(user.ID, tokens.PurposeVerifyEmail)
+func (s *UserService) ResendActivation(userId string) error {
+	user, err := s.userRepo.GetByID(userId)
 	if err != nil {
 		return err
 	}
 
-	if err := s.emailService.SendToken(token.TokenStr, user.Email); err != nil {
+	if err := user.ValidateActivation(); err != nil {
+		return err
+	}
+
+	if err := s.sendActivationEmail(user); err != nil {
 		return err
 	}
 
@@ -107,6 +111,19 @@ func (s *UserService) Activate(tokenStr string) error {
 	}
 
 	if err := s.publisher.UserActivated(token.UserID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *UserService) sendActivationEmail(user *User) error {
+	token, err := s.tokenService.RequestToken(user.ID, tokens.PurposeVerifyEmail)
+	if err != nil {
+		return err
+	}
+
+	if err := s.emailService.SendToken(token.TokenStr, user.Email); err != nil {
 		return err
 	}
 

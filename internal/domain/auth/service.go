@@ -29,15 +29,11 @@ func (s *AuthService) Login(username string, password string) (*TokenPair, error
 		return nil, err
 	}
 
-	if !user.IsActive {
-		return nil, ErrInactiveUser
-	}
-
 	if !s.pswdService.CheckPassword(password, user.PasswordHash) {
 		return nil, ErrInvalidCredentials
 	}
 
-	token, err := s.jwtService.GenerateTokenPair(user.ID)
+	token, err := s.jwtService.GenerateTokenPair(s.payloadFromUser(user))
 	if err != nil {
 		return nil, err
 	}
@@ -46,24 +42,31 @@ func (s *AuthService) Login(username string, password string) (*TokenPair, error
 }
 
 func (s *AuthService) Refresh(refreshToken string) (*TokenPair, error) {
-	userId, err := s.jwtService.ValidateToken(refreshToken)
+	tokenPayload, err := s.jwtService.ValidateToken(refreshToken)
 	if err != nil {
 		return nil, err
 	}
 
-	user, err := s.userRepo.GetByID(userId)
+	user, err := s.userRepo.GetByID(tokenPayload.UserID)
 	if err != nil {
 		return nil, err
 	}
 
-	if !user.IsActive {
-		return nil, ErrInactiveUser
-	}
-
-	token, err := s.jwtService.GenerateTokenPair(user.ID)
+	token, err := s.jwtService.GenerateTokenPair(s.payloadFromUser(user))
 	if err != nil {
 		return nil, err
 	}
 
 	return token, nil
+}
+
+func (s *AuthService) Validate(accessToken string) (*JwtPayload, error) {
+	return s.jwtService.ValidateToken(accessToken)
+}
+
+func (s *AuthService) payloadFromUser(user *user_domain.User) *JwtPayload {
+	return &JwtPayload{
+		UserID:   user.ID,
+		IsActive: user.IsActive,
+	}
 }
