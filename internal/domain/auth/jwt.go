@@ -1,9 +1,5 @@
 package auth
 
-import (
-	"time"
-)
-
 type JwtService interface {
 	GenerateTokenPair(payload *JwtPayload) (*TokenPair, error)
 	ValidateToken(tokenStr string) (*JwtPayload, error)
@@ -15,8 +11,8 @@ type TokenPair struct {
 }
 
 type JwtToken struct {
-	Token   string    `json:"token"`
-	Expires time.Time `json:"expires"`
+	Token     string `json:"token"`
+	ExpiresIn int64  `json:"expires_in"`
 }
 
 type JwtPayload struct {

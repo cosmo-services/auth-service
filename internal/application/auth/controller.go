@@ -4,7 +4,6 @@ import (
 	"main/internal/domain/auth"
 	"main/pkg"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -53,10 +52,37 @@ func (controller *AuthController) Login(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"token_type":    "Bearer",
-		"access_token":  pair.Access.Token,
-		"refresh_token": pair.Refresh.Token,
-		"expires_in":    int(time.Until(pair.Access.Expires).Seconds()),
-	})
+	ctx.JSON(http.StatusOK, pair)
+}
+
+// Refresh godoc
+//
+// @Summary	Refresh token
+// @Description	Validate access token and return JWT tokens
+// @Tags auth
+// @Accept json
+// @Produce	json
+// @Param request body RefreshRequest true "Refresh credentials"
+// @Success	200	{object} map[string]string "Successful authentication"
+// @Failure	400	{object} map[string]string "Invalid request format"
+// @Failure	401	{object} map[string]string "Invalid credentials"
+// @Router /api/v1/auth/refresh [post]
+func (controller *AuthController) Refresh(ctx *gin.Context) {
+	var req *RefreshRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		controller.logger.Error(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+	}
+
+	pair, err := controller.authService.Refresh(req.RefreshToken)
+	if err != nil {
+		controller.logger.Error(err)
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+
+		return
+	}
+
+	ctx.JSON(http.StatusOK, pair)
 }
