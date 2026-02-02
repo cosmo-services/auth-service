@@ -15,21 +15,21 @@ type JwtClaims struct {
 	jwt.RegisteredClaims
 }
 
-type JwtService struct {
+type JwtClient struct {
 	secret     string
 	accessTTL  time.Duration
 	refreshTTL time.Duration
 }
 
-func NewJwtService(env config.Env) domain.JwtService {
-	return &JwtService{
+func NewJwtClient(env config.Env) domain.JwtClient {
+	return &JwtClient{
 		secret:     env.JwtSecret,
 		accessTTL:  env.JwtAccessTTL,
 		refreshTTL: env.JwtRefreshTTL,
 	}
 }
 
-func (s *JwtService) GenerateTokenPair(payload *domain.JwtPayload) (*domain.TokenPair, error) {
+func (s *JwtClient) GenerateTokenPair(payload *domain.JwtPayload) (*domain.TokenPair, error) {
 	accessExpires := time.Now().Add(s.accessTTL)
 	accessToken, err := s.generateToken(payload, accessExpires)
 	if err != nil {
@@ -54,7 +54,7 @@ func (s *JwtService) GenerateTokenPair(payload *domain.JwtPayload) (*domain.Toke
 	}, nil
 }
 
-func (s *JwtService) ValidateToken(tokenStr string) (*domain.JwtPayload, error) {
+func (s *JwtClient) ValidateToken(tokenStr string) (*domain.JwtPayload, error) {
 	token, err := jwt.ParseWithClaims(tokenStr, &JwtClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("unexpected signing method")
@@ -73,7 +73,7 @@ func (s *JwtService) ValidateToken(tokenStr string) (*domain.JwtPayload, error) 
 	return nil, errors.New("invalid token")
 }
 
-func (s *JwtService) generateToken(payload *domain.JwtPayload, expiresAt time.Time) (string, error) {
+func (s *JwtClient) generateToken(payload *domain.JwtPayload, expiresAt time.Time) (string, error) {
 	claims := JwtClaims{
 		Payload: payload,
 		RegisteredClaims: jwt.RegisteredClaims{

@@ -1,7 +1,6 @@
 package user
 
 import (
-	"main/internal/application/auth"
 	domain "main/internal/domain/user"
 	"main/pkg"
 	"net/http"
@@ -98,13 +97,9 @@ func (controller *UserController) Activate(ctx *gin.Context) {
 // @Failure 400 {object} map[string]string "User unauthorized"
 // @Router /api/v1/user/activate/resend [post]
 func (controller *UserController) ResendActivation(ctx *gin.Context) {
-	user, err := auth.GetUserFromContext(ctx)
-	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
+	userId := ctx.GetString("user_id")
 
-	if err := controller.service.ResendActivation(user.UserID); err != nil {
+	if err := controller.service.ResendActivation(userId); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

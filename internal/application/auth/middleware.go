@@ -38,7 +38,8 @@ func (m *AuthMiddleware) Handler() gin.HandlerFunc {
 			return
 		}
 
-		ctx.Set("user", payload)
+		ctx.Set("user_id", payload.UserID)
+		ctx.Set("is_active", payload.IsActive)
 
 		ctx.Next()
 	}

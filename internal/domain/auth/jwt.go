@@ -1,6 +1,6 @@
 package auth
 
-type JwtService interface {
+type JwtClient interface {
 	GenerateTokenPair(payload *JwtPayload) (*TokenPair, error)
 	ValidateToken(tokenStr string) (*JwtPayload, error)
 }

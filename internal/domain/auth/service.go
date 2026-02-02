@@ -6,18 +6,18 @@ import (
 )
 
 type AuthService struct {
-	jwtService  JwtService
+	jwtClient   JwtClient
 	pswdService *password.PasswordService
 	userRepo    user_domain.UserRepository
 }
 
 func NewAuthService(
-	jwtService JwtService,
+	jwtClient JwtClient,
 	pswdService *password.PasswordService,
 	userRepo user_domain.UserRepository,
 ) *AuthService {
 	return &AuthService{
-		jwtService:  jwtService,
+		jwtClient:   jwtClient,
 		pswdService: pswdService,
 		userRepo:    userRepo,
 	}
@@ -33,7 +33,7 @@ func (s *AuthService) Login(username string, password string) (*TokenPair, error
 		return nil, ErrInvalidCredentials
 	}
 
-	token, err := s.jwtService.GenerateTokenPair(s.payloadFromUser(user))
+	token, err := s.jwtClient.GenerateTokenPair(s.payloadFromUser(user))
 	if err != nil {
 		return nil, err
 	}
@@ -42,7 +42,7 @@ func (s *AuthService) Login(username string, password string) (*TokenPair, error
 }
 
 func (s *AuthService) Refresh(refreshToken string) (*TokenPair, error) {
-	tokenPayload, err := s.jwtService.ValidateToken(refreshToken)
+	tokenPayload, err := s.jwtClient.ValidateToken(refreshToken)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func (s *AuthService) Refresh(refreshToken string) (*TokenPair, error) {
 		return nil, err
 	}
 
-	token, err := s.jwtService.GenerateTokenPair(s.payloadFromUser(user))
+	token, err := s.jwtClient.GenerateTokenPair(s.payloadFromUser(user))
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func (s *AuthService) Refresh(refreshToken string) (*TokenPair, error) {
 }
 
 func (s *AuthService) Validate(accessToken string) (*JwtPayload, error) {
-	return s.jwtService.ValidateToken(accessToken)
+	return s.jwtClient.ValidateToken(accessToken)
 }
 
 func (s *AuthService) payloadFromUser(user *user_domain.User) *JwtPayload {
