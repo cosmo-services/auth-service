@@ -155,10 +155,10 @@ func (r *userRepository) Delete(userID string) error {
 	return nil
 }
 
-func (r *userRepository) DeleteUnactiveUsers(before time.Time) error {
-	_, err := r.db.Exec(deleteUnactiveUsersQuery, before.UTC())
+func (r *userRepository) DeleteInactiveUsers(before time.Time) error {
+	_, err := r.db.Exec(deleteInactiveUsersQuery, before.UTC())
 	if err != nil {
-		return fmt.Errorf("failed to delete unactive users: %w", err)
+		return fmt.Errorf("failed to delete inactive users: %w", err)
 	}
 
 	return nil

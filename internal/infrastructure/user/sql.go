@@ -38,7 +38,7 @@ const (
 		WHERE id = $1 AND is_deleted = false
 	`
 
-	deleteUnactiveUsersQuery = `
+	deleteInactiveUsersQuery = `
 		DELETE FROM users 
 		WHERE is_active = false 
 		AND created_at < $1
