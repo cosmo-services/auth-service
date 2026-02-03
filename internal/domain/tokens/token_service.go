@@ -94,3 +94,7 @@ func (service *TokenService) ClearExpiredTokens() error {
 func (service *TokenService) RevokeToken(userId string, tokenType TokenPurpose) error {
 	return service.tokenRepo.DeleteByUserId(userId, tokenType)
 }
+
+func (service *TokenService) RevokeAllUserTokens(userId string) error {
+	return service.tokenRepo.DeleteAllUserTokens(userId)
+}

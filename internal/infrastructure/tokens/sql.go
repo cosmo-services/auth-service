@@ -28,6 +28,11 @@ const (
 		WHERE user_id = $1 AND token_type = $2
 	`
 
+	deleteTokensByUserIDQuery = `
+		DELETE FROM tokens 
+		WHERE user_id = $1
+	`
+
 	findTokenByUserIDAndTypeQuery = `
 		SELECT id, user_id, hash, token_type, expires_at, created_at
 		FROM tokens 

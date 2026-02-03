@@ -98,6 +98,14 @@ func (r *tokenRepository) DeleteByUserId(userId string, tokenType domain.TokenPu
 	return nil
 }
 
+func (r *tokenRepository) DeleteAllUserTokens(userId string) error {
+	_, err := r.db.Exec(deleteTokensByUserIDQuery, userId)
+	if err != nil {
+		return fmt.Errorf("failed to delete user's token: %w", err)
+	}
+	return nil
+}
+
 func (r *tokenRepository) FindByUserId(userId string, tokenType domain.TokenPurpose) (*domain.Token, error) {
 	token := &domain.Token{}
 	err := r.db.QueryRow(findTokenByUserIDAndTypeQuery, userId, tokenType).Scan(

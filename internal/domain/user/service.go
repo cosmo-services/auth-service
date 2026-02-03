@@ -124,8 +124,7 @@ func (s *UserService) Delete(userId string) error {
 	}
 
 	if !user.IsActive {
-		err := s.tokenService.RevokeToken(userId, tokens.PurposeVerifyEmail)
-		if err != nil {
+		if err := s.tokenService.RevokeAllUserTokens(userId); err != nil {
 			return err
 		}
 	}
