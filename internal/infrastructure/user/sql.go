@@ -38,6 +38,12 @@ const (
 		WHERE id = $1 AND is_deleted = false
 	`
 
+	deleteUnactiveUsersQuery = `
+		DELETE FROM users 
+		WHERE is_active = false 
+		AND created_at < $1
+	`
+
 	checkEmailAvailabilityQuery = `
 		SELECT 1 FROM users WHERE email = $1 AND is_deleted = false
 	`

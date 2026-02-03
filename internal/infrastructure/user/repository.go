@@ -11,8 +11,6 @@ import (
 	"main/pkg"
 )
 
-
-
 type userRepository struct {
 	db pkg.PostgresDB
 }
@@ -152,6 +150,15 @@ func (r *userRepository) Delete(userID string) error {
 	rowsAffected, _ := result.RowsAffected()
 	if rowsAffected == 0 {
 		return domain.ErrUserNotFound
+	}
+
+	return nil
+}
+
+func (r *userRepository) DeleteUnactiveUsers(before time.Time) error {
+	_, err := r.db.Exec(deleteUnactiveUsersQuery, before.UTC())
+	if err != nil {
+		return fmt.Errorf("failed to delete unactive users: %w", err)
 	}
 
 	return nil
