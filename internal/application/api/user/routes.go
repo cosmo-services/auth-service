@@ -24,7 +24,7 @@ func NewUserRoutes(
 }
 
 func (r *UserRoutes) Setup() {
-	api := r.handler.Gin.Group("/api/v1")
+	api := r.handler.Gin.Group("/api/v1/user")
 
 	public := api.Group("/")
 	{
@@ -36,5 +36,6 @@ func (r *UserRoutes) Setup() {
 	protected.Use(r.authMiddleware.Handler())
 	{
 		protected.POST("/activate/resend", r.userController.ResendActivation)
+		protected.DELETE("/delete", r.userController.DeleteUser)
 	}
 }

@@ -17,3 +17,8 @@ func (p *MockPublisher) UserActivated(userId string) error {
 	p.logger.Info("user activated: " + userId)
 	return nil
 }
+
+func (p *MockPublisher) UserDeleted(userId string) error {
+	p.logger.Info("user deleted: " + userId)
+	return nil
+}

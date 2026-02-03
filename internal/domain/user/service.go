@@ -117,6 +117,18 @@ func (s *UserService) Activate(tokenStr string) error {
 	return nil
 }
 
+func (s *UserService) Delete(userId string) error {
+	if err := s.userRepo.Delete(userId); err != nil {
+		return err
+	}
+
+	if err := s.publisher.UserDeleted(userId); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (s *UserService) sendActivationEmail(user *User) error {
 	token, err := s.tokenService.RequestToken(user.ID, tokens.PurposeVerifyEmail)
 	if err != nil {

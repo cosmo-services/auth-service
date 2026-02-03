@@ -15,84 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/activate": {
-            "get": {
-                "description": "Activate user account using verification token from email",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Activate user account",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Activation token from email",
-                        "name": "token",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User activated successfully",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Token parameter is missing or invalid",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/activate/resend": {
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Request a new activation email to be sent to the user's email address.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Request activation email",
-                "responses": {
-                    "200": {
-                        "description": "Activation email sent successfully",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "User unauthorized",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/health": {
             "get": {
                 "description": "Check if the service is alive",
@@ -229,7 +151,134 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/register": {
+        "/api/v1/user/activate": {
+            "get": {
+                "description": "Activate user account using verification token from email",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Activate user account",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Activation token from email",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User activated successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Token parameter is missing or invalid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/activate/resend": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Request a new activation email to be sent to the user's email address.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Request activation email",
+                "responses": {
+                    "200": {
+                        "description": "Activation email sent successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "User unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/delete": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Permanently delete the authenticated user's account.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Delete user account",
+                "responses": {
+                    "200": {
+                        "description": "User account deleted successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid user ID or deletion failed",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User not authenticated",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/register": {
             "post": {
                 "description": "Register a new user account with email, password and optional username",
                 "consumes": [
