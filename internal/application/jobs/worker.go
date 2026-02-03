@@ -12,9 +12,9 @@ type Worker interface {
 
 type Workers []Worker
 
-func NewWorkers(testWorker *TestWorker) Workers {
+func NewWorkers(tokenClearWorker *TokenClearWorker) Workers {
 	return Workers{
-		testWorker,
+		tokenClearWorker,
 	}
 }
 
@@ -26,5 +26,5 @@ func (w Workers) Run(ctx context.Context) {
 
 var Module = fx.Options(
 	fx.Provide(NewWorkers),
-	fx.Provide(NewTestWorker),
+	fx.Provide(NewTokenClearWorker),
 )

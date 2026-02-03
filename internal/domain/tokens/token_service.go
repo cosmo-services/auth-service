@@ -73,7 +73,7 @@ func (service *TokenService) RequestToken(userId string, tokenType TokenPurpose)
 		UserID:    userId,
 		Hash:      tokenHash,
 		TokenType: tokenType,
-		ExpiresAt: time.Now().Add(10 * time.Minute),
+		ExpiresAt: time.Now().Add(1 * time.Minute),
 		CreatedAt: time.Now(),
 	}
 

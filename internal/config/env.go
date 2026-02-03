@@ -34,6 +34,8 @@ type Env struct {
 
 	TemplatesDir string `mapstructure:"TEMPLATES_DIR"`
 
+	ClearExpiredTokensTTL time.Duration `mapstructure:"CLEAR_EXP_TOKENS_TTL"`
+
 	AllowedOrigins []string `mapstructure:"ALLOWED_ORIGINS"`
 }
 
@@ -104,6 +106,14 @@ func (e *Env) bindEnv() {
 			log.Fatalf("Invalid JWT_REFRESH_TTL format: %v", err)
 		}
 		e.JwtRefreshTTL = d
+	}
+
+	if val := os.Getenv("CLEAR_EXP_TOKENS_TTL"); val != "" {
+		d, err := time.ParseDuration(val)
+		if err != nil {
+			log.Fatalf("Invalid CLEAR_EXP_TOKENS_TTL format: %v", err)
+		}
+		e.ClearExpiredTokensTTL = d
 	}
 
 	if val := os.Getenv("ALLOWED_ORIGINS"); val != "" {
