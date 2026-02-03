@@ -90,3 +90,7 @@ func (service *TokenService) RequestToken(userId string, tokenType TokenPurpose)
 func (service *TokenService) ClearExpiredTokens() error {
 	return service.tokenRepo.DeleteExpired(time.Now())
 }
+
+func (service *TokenService) RevokeToken(userId string, tokenType TokenPurpose) error {
+	return service.tokenRepo.DeleteByUserId(userId, tokenType)
+}

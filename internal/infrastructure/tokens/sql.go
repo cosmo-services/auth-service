@@ -24,11 +24,8 @@ const (
 	`
 
 	deleteTokenByUserIDAndTypeQuery = `
-		DELETE
-		FROM tokens 
+		DELETE FROM tokens 
 		WHERE user_id = $1 AND token_type = $2
-		ORDER BY created_at DESC
-		LIMIT 1
 	`
 
 	findTokenByUserIDAndTypeQuery = `
