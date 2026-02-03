@@ -10,6 +10,7 @@ import (
 	"main/pkg"
 
 	"main/internal/application/api"
+	"main/internal/application/jobs"
 	"main/internal/config"
 )
 
@@ -19,8 +20,10 @@ func Run() any {
 		logger pkg.Logger,
 		handler pkg.RequestHandler,
 		routes api.Routes,
+		workers jobs.Workers,
 	) {
 		routes.Setup()
+		workers.Run()
 
 		err := handler.Gin.Run(":" + env.Port)
 
