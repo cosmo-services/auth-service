@@ -1,7 +1,7 @@
 package bootstrap
 
 import (
-	"main/internal/application"
+	"main/internal/application/api"
 	"main/internal/config"
 	"main/pkg"
 
@@ -10,10 +10,10 @@ import (
 	tokens_infrastructure "main/internal/infrastructure/tokens"
 	user_infrastructure "main/internal/infrastructure/user"
 
-	auth_application "main/internal/application/auth"
-	ping_application "main/internal/application/ping"
-	swagger_application "main/internal/application/swagger"
-	user_application "main/internal/application/user"
+	auth_api "main/internal/application/api/auth"
+	health_api "main/internal/application/api/health"
+	swagger_api "main/internal/application/api/swagger"
+	user_api "main/internal/application/api/user"
 
 	auth_domain "main/internal/domain/auth"
 	password_domain "main/internal/domain/password"
@@ -32,11 +32,11 @@ var CommonModules = fx.Options(
 	auth_infrastructure.Module,
 	tokens_infrastructure.Module,
 
-	application.Module,
-	ping_application.Module,
-	swagger_application.Module,
-	user_application.Module,
-	auth_application.Module,
+	api.Module,
+	health_api.Module,
+	swagger_api.Module,
+	user_api.Module,
+	auth_api.Module,
 
 	user_domain.Module,
 	password_domain.Module,

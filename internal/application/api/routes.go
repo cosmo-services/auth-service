@@ -1,10 +1,10 @@
-package application
+package api
 
 import (
-	auth_application "main/internal/application/auth"
-	health_application "main/internal/application/health"
-	swagger_application "main/internal/application/swagger"
-	user_application "main/internal/application/user"
+	auth_application "main/internal/application/api/auth"
+	health_application "main/internal/application/api/health"
+	swagger_application "main/internal/application/api/swagger"
+	user_application "main/internal/application/api/user"
 
 	"go.uber.org/fx"
 )

@@ -9,7 +9,7 @@ import (
 
 	"main/pkg"
 
-	"main/internal/application"
+	"main/internal/application/api"
 	"main/internal/config"
 )
 
@@ -18,7 +18,7 @@ func Run() any {
 		env config.Env,
 		logger pkg.Logger,
 		handler pkg.RequestHandler,
-		routes application.Routes,
+		routes api.Routes,
 	) {
 		routes.Setup()
 

@@ -10,23 +10,25 @@ import (
 )
 
 type GmailService struct {
-	logger    pkg.Logger
-	fromEmail string
-	appPass   string
-	appDomain string
-	smtp      string
-	port      int
+	logger             pkg.Logger
+	fromEmail          string
+	appPass            string
+	appDomain          string
+	smtp               string
+	port               int
+	apiActivationRoute string
 }
 
 func NewGmailService(env config.Env, logger pkg.Logger) user.EmailService {
 	port, _ := strconv.Atoi(env.GmailPort)
 	return &GmailService{
-		fromEmail: env.GmailFrom,
-		appPass:   env.GmailPass,
-		appDomain: env.AppDomain,
-		smtp:      env.GmailSMTP,
-		port:      port,
-		logger:    logger,
+		apiActivationRoute: env.ApiActivationRoute,
+		fromEmail:          env.GmailFrom,
+		appPass:            env.GmailPass,
+		appDomain:          env.AppDomain,
+		smtp:               env.GmailSMTP,
+		port:               port,
+		logger:             logger,
 	}
 }
 
@@ -36,7 +38,7 @@ func (s *GmailService) SendToken(token string, email string) error {
 	m.SetHeader("From", "NoReply <"+s.fromEmail+">")
 	m.SetHeader("To", email)
 	m.SetHeader("Subject", "Account activation")
-	activationLink := s.appDomain + "/api/v1/user/activate?token=" + token
+	activationLink := s.appDomain + s.apiActivationRoute + "?token=" + token
 	htmlBody := s.getEmailBody(activationLink)
 	m.SetBody("text/html", htmlBody)
 

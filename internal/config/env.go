@@ -30,6 +30,8 @@ type Env struct {
 	JwtAccessTTL  time.Duration `mapstructure:"JWT_ACCESS_TTL"`
 	JwtRefreshTTL time.Duration `mapstructure:"JWT_REFRESH_TTL"`
 
+	ApiActivationRoute string `mapstructure:"API_ACTIVATION_ROUTE"`
+
 	AllowedOrigins []string `mapstructure:"ALLOWED_ORIGINS"`
 }
 
@@ -81,6 +83,8 @@ func (e *Env) bindEnv() {
 	e.AppDomain = os.Getenv("APP_DOMAIN")
 
 	e.JwtSecret = os.Getenv("JWT_SECRET")
+
+	e.ApiActivationRoute = os.Getenv("API_ACTIVATION_ROUTE")
 
 	if val := os.Getenv("JWT_ACCESS_TTL"); val != "" {
 		d, err := time.ParseDuration(val)

@@ -25,7 +25,74 @@ info:
   title: Cosmo Auth API
   version: "1.0"
 paths:
-  /api/v1/auth/login:
+  /api/v1/activate:
+    get:
+      description: Activate user account using verification token from email
+      parameters:
+      - description: Activation token from email
+        in: query
+        name: token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User activated successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Token parameter is missing or invalid
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Activate user account
+      tags:
+      - user
+  /api/v1/activate/resend:
+    post:
+      description: Request a new activation email to be sent to the user's email address.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Activation email sent successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: User unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Request activation email
+      tags:
+      - user
+  /api/v1/health:
+    get:
+      consumes:
+      - application/json
+      description: Check if the service is alive
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful response
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Health endpoint
+      tags:
+      - health
+  /api/v1/login:
     post:
       consumes:
       - application/json
@@ -61,7 +128,7 @@ paths:
       summary: User login
       tags:
       - auth
-  /api/v1/auth/refresh:
+  /api/v1/refresh:
     post:
       consumes:
       - application/json
@@ -97,74 +164,7 @@ paths:
       summary: Refresh token
       tags:
       - auth
-  /api/v1/ping:
-    get:
-      consumes:
-      - application/json
-      description: Check if the service is alive
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Successful response
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Ping endpoint
-      tags:
-      - health
-  /api/v1/user/activate:
-    get:
-      description: Activate user account using verification token from email
-      parameters:
-      - description: Activation token from email
-        in: query
-        name: token
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: User activated successfully
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Token parameter is missing or invalid
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Activate user account
-      tags:
-      - user
-  /api/v1/user/activate/resend:
-    post:
-      description: Request a new activation email to be sent to the user's email address.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Activation email sent successfully
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: User unauthorized
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      security:
-      - BearerAuth: []
-      summary: Request activation email
-      tags:
-      - user
-  /api/v1/user/register:
+  /api/v1/register:
     post:
       consumes:
       - application/json

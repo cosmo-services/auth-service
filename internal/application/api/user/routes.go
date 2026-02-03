@@ -1,7 +1,7 @@
 package user
 
 import (
-	"main/internal/application/auth"
+	"main/internal/application/api/auth"
 	"main/pkg"
 )
 
