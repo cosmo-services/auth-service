@@ -10,8 +10,6 @@ import (
 	"main/pkg"
 )
 
-
-
 type tokenRepository struct {
 	db pkg.PostgresDB
 }
@@ -86,6 +84,15 @@ func (r *tokenRepository) DeleteExpired(expireTime time.Time) error {
 	_, err := r.db.Exec(deleteExpiredTokensQuery, expireTime)
 	if err != nil {
 		return fmt.Errorf("failed to delete expired tokens: %w", err)
+	}
+
+	return nil
+}
+
+func (r *tokenRepository) DeleteByUserId(userId string, tokenType domain.TokenPurpose) error {
+	_, err := r.db.Exec(deleteTokenByUserIDAndTypeQuery, userId, tokenType)
+	if err != nil {
+		return fmt.Errorf("failed to delete user's token: %w", err)
 	}
 
 	return nil

@@ -8,4 +8,5 @@ type TokenRepository interface {
 	DeleteById(tokenId string) error
 	DeleteExpired(expireTime time.Time) error
 	FindByUserId(userId string, tokenType TokenPurpose) (*Token, error)
+	DeleteByUserId(userId string, tokenType TokenPurpose) error
 }

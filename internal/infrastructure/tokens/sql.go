@@ -23,6 +23,14 @@ const (
 		WHERE expires_at < $1
 	`
 
+	deleteTokenByUserIDAndTypeQuery = `
+		DELETE
+		FROM tokens 
+		WHERE user_id = $1 AND token_type = $2
+		ORDER BY created_at DESC
+		LIMIT 1
+	`
+
 	findTokenByUserIDAndTypeQuery = `
 		SELECT id, user_id, hash, token_type, expires_at, created_at
 		FROM tokens 
