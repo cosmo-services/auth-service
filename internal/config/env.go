@@ -32,6 +32,8 @@ type Env struct {
 
 	ApiActivationRoute string `mapstructure:"API_ACTIVATION_ROUTE"`
 
+	TemplatesDir string `mapstructure:"TEMPLATES_DIR"`
+
 	AllowedOrigins []string `mapstructure:"ALLOWED_ORIGINS"`
 }
 
@@ -85,6 +87,8 @@ func (e *Env) bindEnv() {
 	e.JwtSecret = os.Getenv("JWT_SECRET")
 
 	e.ApiActivationRoute = os.Getenv("API_ACTIVATION_ROUTE")
+
+	e.TemplatesDir = os.Getenv("TEMPLATES_DIR")
 
 	if val := os.Getenv("JWT_ACCESS_TTL"); val != "" {
 		d, err := time.ParseDuration(val)

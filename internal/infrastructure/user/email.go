@@ -1,12 +1,19 @@
 package infrastructure
 
 import (
+	"bytes"
 	"main/internal/config"
 	"main/internal/domain/user"
 	"main/pkg"
+	"path/filepath"
 	"strconv"
+	"text/template"
 
 	"gopkg.in/gomail.v2"
+)
+
+const (
+	AccountActivation = "Account activation"
 )
 
 type GmailService struct {
@@ -17,6 +24,11 @@ type GmailService struct {
 	smtp               string
 	port               int
 	apiActivationRoute string
+	templatesDir       string
+}
+
+type EmailTemplateData struct {
+	ActivationLink string
 }
 
 func NewGmailService(env config.Env, logger pkg.Logger) user.EmailService {
@@ -27,19 +39,35 @@ func NewGmailService(env config.Env, logger pkg.Logger) user.EmailService {
 		appPass:            env.GmailPass,
 		appDomain:          env.AppDomain,
 		smtp:               env.GmailSMTP,
+		templatesDir:       env.TemplatesDir,
 		port:               port,
 		logger:             logger,
 	}
 }
 
 func (s *GmailService) SendToken(token string, email string) error {
-	s.logger.Info("token: " + token)
+	activationLink := s.appDomain + s.apiActivationRoute + "?token=" + token
+
+	htmlBody, err := s.renderTemplate("activation.html", EmailTemplateData{
+		ActivationLink: activationLink,
+	})
+	if err != nil {
+		return err
+	}
+
+	if err := s.sendEmail(AccountActivation, email, htmlBody); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *GmailService) sendEmail(subject string, to string, htmlBody string) error {
 	m := gomail.NewMessage()
 	m.SetHeader("From", "NoReply <"+s.fromEmail+">")
-	m.SetHeader("To", email)
-	m.SetHeader("Subject", "Account activation")
-	activationLink := s.appDomain + s.apiActivationRoute + "?token=" + token
-	htmlBody := s.getEmailBody(activationLink)
+	m.SetHeader("To", to)
+	m.SetHeader("Subject", subject)
+
 	m.SetBody("text/html", htmlBody)
 
 	d := gomail.NewDialer(s.smtp, s.port, s.fromEmail, s.appPass)
@@ -51,33 +79,18 @@ func (s *GmailService) SendToken(token string, email string) error {
 	return nil
 }
 
-func (s *GmailService) getEmailBody(activationLink string) string {
-	return `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Подтверждение email</title>
-</head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-  <p>Пожалуйста, подтвердите ваш email, чтобы активировать аккаунт.</p>
-  
-  <a href="` + activationLink + `" 
-     style="display: inline-block; 
-            padding: 12px 24px; 
-            background-color: #4CAF50; 
-            color: white; 
-            text-decoration: none; 
-            border-radius: 4px; 
-            font-weight: bold; 
-            margin: 16px 0;">
-    Подтвердить
-  </a>
+func (s *GmailService) renderTemplate(templateName string, data any) (string, error) {
+	templatePath := filepath.Join(s.templatesDir, templateName)
 
-  <hr style="margin: 32px 0; border: 0; border-top: 1px solid #eee;">
-  <p style="color: #777; font-size: 12px;">
-    Это письмо отправлено автоматически. Пожалуйста, не отвечайте на него.
-  </p>
-</body>
-</html>`
+	tmpl, err := template.ParseFiles(templatePath)
+	if err != nil {
+		return "", err
+	}
+
+	var buf bytes.Buffer
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
 }
