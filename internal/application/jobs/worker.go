@@ -1,23 +1,30 @@
 package jobs
 
-import "go.uber.org/fx"
+import (
+	"context"
+
+	"go.uber.org/fx"
+)
 
 type Worker interface {
-	Run()
+	Run(ctx context.Context)
 }
 
 type Workers []Worker
 
-func NewWorkers() Workers {
-	return Workers{}
+func NewWorkers(testWorker *TestWorker) Workers {
+	return Workers{
+		testWorker,
+	}
 }
 
-func (w Workers) Run() {
+func (w Workers) Run(ctx context.Context) {
 	for _, worker := range w {
-		worker.Run()
+		go worker.Run(ctx)
 	}
 }
 
 var Module = fx.Options(
 	fx.Provide(NewWorkers),
+	fx.Provide(NewTestWorker),
 )

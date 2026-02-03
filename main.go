@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"main/cmd"
 	_ "main/docs"
 )
@@ -13,7 +12,5 @@ import (
 // @name Authorization
 // @security BearerAuth
 func main() {
-	if err := cmd.StartApp(); err != nil {
-		log.Fatal(err)
-	}
+	cmd.StartApp()
 }
