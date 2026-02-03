@@ -30,7 +30,7 @@ func NewUserController(service *domain.UserService, logger pkg.Logger) *UserCont
 // @Param request body	UserRegisterRequest true "User registration request"
 // @Success 200 {object} map[string]string	"Successful registration"
 // @Failure 400 {object} map[string]string	"Invalid request or validation error"
-// @Router	/api/v1/user/register [post]
+// @Router	/api/v1/register [post]
 func (controller *UserController) Register(ctx *gin.Context) {
 	var req *UserRegisterRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -65,7 +65,7 @@ func (controller *UserController) Register(ctx *gin.Context) {
 // @Param token query string true "Activation token from email"
 // @Success 200 {object} map[string]string "User activated successfully"
 // @Failure 400 {object} map[string]string "Token parameter is missing or invalid"
-// @Router /api/v1/user/activate [get]
+// @Router /api/v1/activate [get]
 func (controller *UserController) Activate(ctx *gin.Context) {
 	tokenStr, ok := ctx.GetQuery("token")
 	if !ok {
@@ -95,7 +95,7 @@ func (controller *UserController) Activate(ctx *gin.Context) {
 // @Security BearerAuth
 // @Success 200 {object} map[string]string "Activation email sent successfully"
 // @Failure 400 {object} map[string]string "User unauthorized"
-// @Router /api/v1/user/activate/resend [post]
+// @Router /api/v1/activate/resend [post]
 func (controller *UserController) ResendActivation(ctx *gin.Context) {
 	userId := ctx.GetString("user_id")
 

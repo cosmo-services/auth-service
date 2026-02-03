@@ -26,13 +26,13 @@ func NewUserRoutes(
 func (r *UserRoutes) Setup() {
 	api := r.handler.Gin.Group("/api/v1")
 
-	public := api.Group("/user")
+	public := api.Group("/")
 	{
 		public.POST("/register", r.userController.Register)
 		public.GET("/activate", r.userController.Activate)
 	}
 
-	protected := api.Group("/user")
+	protected := api.Group("/")
 	protected.Use(r.authMiddleware.Handler())
 	{
 		protected.POST("/activate/resend", r.userController.ResendActivation)

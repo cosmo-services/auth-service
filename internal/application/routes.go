@@ -2,7 +2,7 @@ package application
 
 import (
 	auth_application "main/internal/application/auth"
-	ping_application "main/internal/application/ping"
+	health_application "main/internal/application/health"
 	swagger_application "main/internal/application/swagger"
 	user_application "main/internal/application/user"
 
@@ -17,12 +17,12 @@ type Routes []Route
 
 func NewRoutes(
 	swaggerRoutes *swagger_application.SwaggerRoutes,
-	pingRoutes *ping_application.PingRoutes,
+	healthRoutes *health_application.HealthRoutes,
 	userRoutes *user_application.UserRoutes,
 	auhtRoutes *auth_application.AuthRoutes,
 ) Routes {
 	return Routes{
-		pingRoutes,
+		healthRoutes,
 		swaggerRoutes,
 		userRoutes,
 		auhtRoutes,

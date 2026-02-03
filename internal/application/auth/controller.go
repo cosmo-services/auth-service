@@ -34,7 +34,7 @@ func NewAuthController(
 // @Success	200	{object} map[string]string "Successful authentication"
 // @Failure	400	{object} map[string]string "Invalid request format"
 // @Failure	401	{object} map[string]string "Invalid credentials"
-// @Router /api/v1/auth/login [post]
+// @Router /api/v1/login [post]
 func (controller *AuthController) Login(ctx *gin.Context) {
 	var req *LoginRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -66,7 +66,7 @@ func (controller *AuthController) Login(ctx *gin.Context) {
 // @Success	200	{object} map[string]string "Successful authentication"
 // @Failure	400	{object} map[string]string "Invalid request format"
 // @Failure	401	{object} map[string]string "Invalid credentials"
-// @Router /api/v1/auth/refresh [post]
+// @Router /api/v1/refresh [post]
 func (controller *AuthController) Refresh(ctx *gin.Context) {
 	var req *RefreshRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
