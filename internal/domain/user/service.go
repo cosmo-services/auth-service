@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+const (
+	ActivateDuration = 7 * 24 * time.Hour
+)
+
 type UserService struct {
 	userRepo     UserRepository
 	pswdService  *password.PasswordService
@@ -123,17 +127,25 @@ func (s *UserService) Delete(userId string) error {
 		return err
 	}
 
-	if !user.IsActive {
-		if err := s.tokenService.RevokeAllUserTokens(userId); err != nil {
-			return err
-		}
+	if err := s.tokenService.RevokeAllUserTokens(userId); err != nil {
+		return err
 	}
 
 	if err := s.userRepo.Delete(userId); err != nil {
 		return err
 	}
 
-	if err := s.publisher.UserDeleted(userId); err != nil {
+	if user.IsActive {
+		if err := s.publisher.UserDeleted(userId); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (s *UserService) DeleteInactiveUsers() error {
+	if err := s.userRepo.DeleteInactiveUsers(time.Now().Add(-ActivateDuration)); err != nil {
 		return err
 	}
 
