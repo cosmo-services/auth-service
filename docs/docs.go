@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/ping": {
+        "/health": {
             "get": {
                 "description": "Check if the service is alive",
                 "consumes": [
@@ -27,7 +27,7 @@ const docTemplate = `{
                 "tags": [
                     "health"
                 ],
-                "summary": "Ping endpoint",
+                "summary": "Health endpoint",
                 "responses": {
                     "200": {
                         "description": "Successful response",
@@ -38,6 +38,324 @@ const docTemplate = `{
                             }
                         }
                     }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "description": "Authenticate user and return JWT tokens",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "description": "Login credentials",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful authentication",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request format",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/refresh": {
+            "post": {
+                "description": "Validate access token and return JWT tokens",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Refresh token",
+                "parameters": [
+                    {
+                        "description": "Refresh credentials",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/auth.RefreshRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful authentication",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request format",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/activate": {
+            "get": {
+                "description": "Activate user account using verification token from email",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Activate user account",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Activation token from email",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User activated successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Token parameter is missing or invalid",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/activate/resend": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Request a new activation email to be sent to the user's email address.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Request activation email",
+                "responses": {
+                    "200": {
+                        "description": "Activation email sent successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "User unauthorized",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/delete": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Permanently delete the authenticated user's account.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Delete user account",
+                "responses": {
+                    "200": {
+                        "description": "User account deleted successfully",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid user ID or deletion failed",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User not authenticated",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/register": {
+            "post": {
+                "description": "Register a new user account with email, password and optional username",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Register a new user",
+                "parameters": [
+                    {
+                        "description": "User registration request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/user.UserRegisterRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful registration",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request or validation error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "auth.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "auth.RefreshRequest": {
+            "type": "object",
+            "properties": {
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "user.UserRegisterRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         }
@@ -55,7 +373,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "",
-	BasePath:         "",
+	BasePath:         "/api/v2/auth",
 	Schemes:          []string{},
 	Title:            "Cosmo Auth API",
 	Description:      "",

@@ -9,38 +9,54 @@ import (
 
 	"main/pkg"
 
-	"main/internal/api"
+	"main/internal/application/api"
+	"main/internal/application/jobs"
 	"main/internal/config"
 )
 
-func Run() any {
-	return func(
-		env config.Env,
-		logger pkg.Logger,
-		handler pkg.RequestHandler,
-		routes api.Routes,
-	) {
-		routes.Setup()
+func SetupApp(
+	lc fx.Lifecycle,
+	env config.Env,
+	logger pkg.Logger,
+	handler pkg.RequestHandler,
+	routes api.Routes,
+	workers jobs.Workers,
+) {
+	ctx, cancel := context.WithCancel(context.Background())
 
-		err := handler.Gin.Run(":" + env.Port)
+	lc.Append(fx.Hook{
+		OnStart: func(startCtx context.Context) error {
+			go func() {
+				workers.Run(ctx)
+			}()
 
-		if err != nil {
-			logger.Error(err)
-			return
-		}
-	}
+			go func() {
+				routes.Setup()
+
+				if err := handler.Gin.Run(":" + env.Port); err != nil {
+					logger.Error(err)
+				}
+			}()
+
+			return nil
+		},
+		OnStop: func(stopCtx context.Context) error {
+			cancel()
+
+			return nil
+		},
+	})
 }
 
-func StartApp() error {
+func StartApp() {
 	opts := fx.Options(
-		fx.Invoke(Run()),
+		fx.Invoke(SetupApp),
 	)
 
 	app := fx.New(
 		bootstrap.CommonModules,
 		opts,
 	)
-	ctx := context.Background()
-	err := app.Start(ctx)
-	return err
+
+	app.Run()
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"main/cmd"
 	_ "main/docs"
 )
@@ -12,8 +11,8 @@ import (
 // @in header
 // @name Authorization
 // @security BearerAuth
+
+// @BasePath /api/v1/
 func main() {
-	if err := cmd.StartApp(); err != nil {
-		log.Fatal(err)
-	}
+	cmd.StartApp()
 }

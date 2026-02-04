@@ -1,4 +1,4 @@
-package ping_api
+package health_api
 
 import (
 	"net/http"
@@ -6,26 +6,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type PingController struct {
+type HealthController struct {
 	msg string
 }
 
-func NewPingController() PingController {
-	return PingController{
-		msg: "Pong!",
+func NewHealthController() HealthController {
+	return HealthController{
+		msg: "healthy",
 	}
 }
 
-// Ping godoc
+// Health godoc
 //
-//	@Summary		Ping endpoint
+//	@Summary		Health endpoint
 //	@Description	Check if the service is alive
 //	@Tags			health
 //	@Accept			json
 //	@Produce		json
 //	@Success		200	{object}	map[string]string	"Successful response"
-//	@Router			/api/v1/ping [get]
-func (c PingController) Ping(ctx *gin.Context) {
+//	@Router			/health [get]
+func (c HealthController) Health(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": c.msg,
 	})

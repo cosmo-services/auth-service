@@ -20,9 +20,22 @@ type Env struct {
 	PGPass string `mapstructure:"PG_PASS"`
 	PGName string `mapstructure:"PG_NAME"`
 
-	JwtSecreet    string        `mapstructure:"JWT_SECRET"`
+	GmailPass string `mapstructure:"GMAIL_PASS"`
+	GmailFrom string `mapstructure:"GMAIL_FROM"`
+	GmailPort string `mapstructure:"GMAIL_PORT"`
+	GmailSMTP string `mapstructure:"GMAIL_SMTP"`
+	AppDomain string `mapstructure:"APP_DOMAIN"`
+
+	JwtSecret     string        `mapstructure:"JWT_SECRET"`
 	JwtAccessTTL  time.Duration `mapstructure:"JWT_ACCESS_TTL"`
 	JwtRefreshTTL time.Duration `mapstructure:"JWT_REFRESH_TTL"`
+
+	ApiActivationRoute string `mapstructure:"API_ACTIVATION_ROUTE"`
+
+	TemplatesDir string `mapstructure:"TEMPLATES_DIR"`
+
+	ClearExpiredTokensTTL  time.Duration `mapstructure:"CLEAR_EXP_TOKENS_TTL"`
+	DeleteInactiveUsersTTL time.Duration `mapstructure:"DEL_INACTIVE_TTL"`
 
 	AllowedOrigins []string `mapstructure:"ALLOWED_ORIGINS"`
 }
@@ -68,7 +81,17 @@ func (e *Env) bindEnv() {
 	e.PGPass = os.Getenv("PG_PASS")
 	e.PGName = os.Getenv("PG_NAME")
 
-	e.JwtSecreet = os.Getenv("JWT_SECRET")
+	e.GmailPass = os.Getenv("GMAIL_PASS")
+	e.GmailFrom = os.Getenv("GMAIL_FROM")
+	e.GmailPort = os.Getenv("GMAIL_PORT")
+	e.GmailSMTP = os.Getenv("GMAIL_SMTP")
+	e.AppDomain = os.Getenv("APP_DOMAIN")
+
+	e.JwtSecret = os.Getenv("JWT_SECRET")
+
+	e.ApiActivationRoute = os.Getenv("API_ACTIVATION_ROUTE")
+
+	e.TemplatesDir = os.Getenv("TEMPLATES_DIR")
 
 	if val := os.Getenv("JWT_ACCESS_TTL"); val != "" {
 		d, err := time.ParseDuration(val)
@@ -84,6 +107,22 @@ func (e *Env) bindEnv() {
 			log.Fatalf("Invalid JWT_REFRESH_TTL format: %v", err)
 		}
 		e.JwtRefreshTTL = d
+	}
+
+	if val := os.Getenv("CLEAR_EXP_TOKENS_TTL"); val != "" {
+		d, err := time.ParseDuration(val)
+		if err != nil {
+			log.Fatalf("Invalid CLEAR_EXP_TOKENS_TTL format: %v", err)
+		}
+		e.ClearExpiredTokensTTL = d
+	}
+
+	if val := os.Getenv("DEL_INACTIVE_TTL"); val != "" {
+		d, err := time.ParseDuration(val)
+		if err != nil {
+			log.Fatalf("Invalid DEL_INACTIVE_TTL format: %v", err)
+		}
+		e.DeleteInactiveUsersTTL = d
 	}
 
 	if val := os.Getenv("ALLOWED_ORIGINS"); val != "" {
