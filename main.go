@@ -11,6 +11,8 @@ import (
 // @in header
 // @name Authorization
 // @security BearerAuth
+
+// @BasePath /api/v2/auth
 func main() {
 	cmd.StartApp()
 }

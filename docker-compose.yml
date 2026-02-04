@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  auth-migrate:
+  migrate:
     image: migrate/migrate
     env_file:
       - .env
@@ -19,7 +19,7 @@ services:
     networks:
       - app-network
     
-  auth-api:
+  api:
     build: .
     ports:
       - "${PORT}:${PORT}"

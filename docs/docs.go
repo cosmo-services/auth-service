@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/health": {
+        "/health": {
             "get": {
                 "description": "Check if the service is alive",
                 "consumes": [
@@ -41,7 +41,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/login": {
+        "/login": {
             "post": {
                 "description": "Authenticate user and return JWT tokens",
                 "consumes": [
@@ -96,7 +96,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/refresh": {
+        "/refresh": {
             "post": {
                 "description": "Validate access token and return JWT tokens",
                 "consumes": [
@@ -151,7 +151,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/user/activate": {
+        "/user/activate": {
             "get": {
                 "description": "Activate user account using verification token from email",
                 "produces": [
@@ -192,7 +192,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/user/activate/resend": {
+        "/user/activate/resend": {
             "post": {
                 "security": [
                     {
@@ -229,7 +229,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/user/delete": {
+        "/user/delete": {
             "delete": {
                 "security": [
                     {
@@ -278,7 +278,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/user/register": {
+        "/user/register": {
             "post": {
                 "description": "Register a new user account with email, password and optional username",
                 "consumes": [
@@ -373,7 +373,7 @@ const docTemplate = `{
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
 	Host:             "",
-	BasePath:         "",
+	BasePath:         "/api/v2/auth",
 	Schemes:          []string{},
 	Title:            "Cosmo Auth API",
 	Description:      "",

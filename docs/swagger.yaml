@@ -1,3 +1,4 @@
+basePath: /api/v2/auth
 definitions:
   auth.LoginRequest:
     properties:
@@ -25,7 +26,7 @@ info:
   title: Cosmo Auth API
   version: "1.0"
 paths:
-  /api/v1/health:
+  /health:
     get:
       consumes:
       - application/json
@@ -42,7 +43,7 @@ paths:
       summary: Health endpoint
       tags:
       - health
-  /api/v1/login:
+  /login:
     post:
       consumes:
       - application/json
@@ -78,7 +79,7 @@ paths:
       summary: User login
       tags:
       - auth
-  /api/v1/refresh:
+  /refresh:
     post:
       consumes:
       - application/json
@@ -114,7 +115,7 @@ paths:
       summary: Refresh token
       tags:
       - auth
-  /api/v1/user/activate:
+  /user/activate:
     get:
       description: Activate user account using verification token from email
       parameters:
@@ -141,7 +142,7 @@ paths:
       summary: Activate user account
       tags:
       - user
-  /api/v1/user/activate/resend:
+  /user/activate/resend:
     post:
       description: Request a new activation email to be sent to the user's email address.
       produces:
@@ -164,7 +165,7 @@ paths:
       summary: Request activation email
       tags:
       - user
-  /api/v1/user/delete:
+  /user/delete:
     delete:
       consumes:
       - application/json
@@ -195,7 +196,7 @@ paths:
       summary: Delete user account
       tags:
       - user
-  /api/v1/user/register:
+  /user/register:
     post:
       consumes:
       - application/json

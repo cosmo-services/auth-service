@@ -22,8 +22,6 @@ func SetupApp(
 	routes api.Routes,
 	workers jobs.Workers,
 ) {
-	routes.Setup()
-
 	ctx, cancel := context.WithCancel(context.Background())
 
 	lc.Append(fx.Hook{
@@ -33,6 +31,8 @@ func SetupApp(
 			}()
 
 			go func() {
+				routes.Setup()
+
 				if err := handler.Gin.Run(":" + env.Port); err != nil {
 					logger.Error(err)
 				}
