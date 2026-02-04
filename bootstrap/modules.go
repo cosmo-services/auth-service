@@ -13,6 +13,7 @@ import (
 
 	auth_api "main/internal/application/api/auth"
 	health_api "main/internal/application/api/health"
+	password_api "main/internal/application/api/password"
 	swagger_api "main/internal/application/api/swagger"
 	user_api "main/internal/application/api/user"
 
@@ -39,6 +40,7 @@ var CommonModules = fx.Options(
 	swagger_api.Module,
 	user_api.Module,
 	auth_api.Module,
+	password_api.Module,
 
 	user_domain.Module,
 	password_domain.Module,

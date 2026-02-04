@@ -12,7 +12,7 @@ import (
 // @name Authorization
 // @security BearerAuth
 
-// @BasePath /api/v2/auth
+// @BasePath /api/v1/
 func main() {
 	cmd.StartApp()
 }

@@ -1,10 +1,11 @@
 package api
 
 import (
-	auth_application "main/internal/application/api/auth"
-	health_application "main/internal/application/api/health"
-	swagger_application "main/internal/application/api/swagger"
-	user_application "main/internal/application/api/user"
+	auth_api "main/internal/application/api/auth"
+	health_api "main/internal/application/api/health"
+	password_api "main/internal/application/api/password"
+	swagger_api "main/internal/application/api/swagger"
+	user_api "main/internal/application/api/user"
 
 	"go.uber.org/fx"
 )
@@ -16,16 +17,18 @@ type Route interface {
 type Routes []Route
 
 func NewRoutes(
-	swaggerRoutes *swagger_application.SwaggerRoutes,
-	healthRoutes *health_application.HealthRoutes,
-	userRoutes *user_application.UserRoutes,
-	auhtRoutes *auth_application.AuthRoutes,
+	swaggerRoutes *swagger_api.SwaggerRoutes,
+	healthRoutes *health_api.HealthRoutes,
+	userRoutes *user_api.UserRoutes,
+	auhtRoutes *auth_api.AuthRoutes,
+	pswdRoutes *password_api.PasswordRoutes,
 ) Routes {
 	return Routes{
 		healthRoutes,
 		swaggerRoutes,
 		userRoutes,
 		auhtRoutes,
+		pswdRoutes,
 	}
 }
 
