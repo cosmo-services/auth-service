@@ -171,7 +171,7 @@ func (controller *UserController) GetUser(ctx *gin.Context) {
 // @Security BearerAuth
 // @Param request body	ChangeEmailRequest true "Change email request"
 // @Success 200 {object} map[string]string "Email reset successfully"
-// @Success 400 {object} map[string]string "Email has not changed"
+// @Failure 400 {object} map[string]string "Email has not changed"
 // @Failure 401 {object} map[string]string "User unauthorized"
 // @Router /user/email/change [post]
 func (controller *UserController) ChangeEmail(ctx *gin.Context) {
@@ -192,5 +192,38 @@ func (controller *UserController) ChangeEmail(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "email changed successfully",
+	})
+}
+
+// ChangePassword godoc
+//
+// @Summary Change user password
+// @Description Change current password
+// @Tags user
+// @Produce json
+// @Security BearerAuth
+// @Param request body	ChangePasswordRequest true "Change password request"
+// @Success 200 {object} map[string]string "Password changed successfully"
+// @Failure 400 {object} map[string]string "Password has not changed"
+// @Failure 401 {object} map[string]string "User unauthorized"
+// @Router /user/password/change [post]
+func (controller *UserController) ChangePassword(ctx *gin.Context) {
+	userId := ctx.GetString("user_id")
+
+	var req *ChangePasswordRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		controller.logger.Error(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+	}
+
+	if err := controller.userService.ChangePassword(userId, req.NewPassword); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "password changed successfully",
 	})
 }

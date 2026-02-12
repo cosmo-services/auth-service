@@ -194,6 +194,32 @@ func (s *UserService) ChangeEmail(userId string, newEmail string) error {
 	return nil
 }
 
+func (s *UserService) ChangePassword(userId string, newPassword string) error {
+	if err := s.pswdService.ValidatePassword(newPassword); err != nil {
+		return err
+	}
+
+	passwordHash, err := s.pswdService.HashPassword(newPassword)
+	if err != nil {
+		return err
+	}
+
+	user, err := s.userRepo.GetByID(userId)
+	if err != nil {
+		return err
+	}
+
+	if err := user.ChangePassword(passwordHash); err != nil {
+		return err
+	}
+
+	if err := s.userRepo.Update(user); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (s *UserService) sendActivationEmail(user *User) error {
 	token, err := s.tokenService.RequestToken(user.ID, tokens.PurposeVerifyEmail)
 	if err != nil {

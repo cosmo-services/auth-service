@@ -44,3 +44,8 @@ func (u *User) ChangeEmail(newEmail string) error {
 	u.IsActive = false
 	return nil
 }
+
+func (u *User) ChangePassword(newPasswordHash string) error {
+	u.PasswordHash = newPasswordHash
+	return nil
+}

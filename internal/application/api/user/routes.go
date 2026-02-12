@@ -39,5 +39,6 @@ func (r *UserRoutes) Setup() {
 		protected.DELETE("/profile", r.userController.DeleteUser)
 		protected.POST("/activate/resend", r.userController.ResendActivation)
 		protected.POST("/email/change", r.userController.ChangeEmail)
+		protected.POST("/password/change", r.userController.ChangePassword)
 	}
 }
