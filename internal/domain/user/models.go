@@ -35,3 +35,25 @@ func (u *User) Activate() error {
 
 	return nil
 }
+
+func (u *User) ChangeEmail(newEmail string) error {
+	if u.Email == newEmail {
+		return ErrEmailNotChanged
+	}
+	u.Email = newEmail
+	u.IsActive = false
+	return nil
+}
+
+func (u *User) ChangePassword(newPasswordHash string) error {
+	u.PasswordHash = newPasswordHash
+	return nil
+}
+
+func (u *User) ChangeUsername(newUsername string) error {
+	if u.Username == newUsername {
+		return ErrUsernameNotChanged
+	}
+	u.Username = newUsername
+	return nil
+}

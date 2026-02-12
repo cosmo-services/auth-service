@@ -43,14 +43,10 @@ func (s *JwtClient) GenerateTokenPair(payload *domain.JwtPayload) (*domain.Token
 	}
 
 	return &domain.TokenPair{
-		Access: domain.JwtToken{
-			Token:     accessToken,
-			ExpiresIn: int64(s.accessTTL.Seconds()),
-		},
-		Refresh: domain.JwtToken{
-			Token:     refreshToken,
-			ExpiresIn: int64(s.refreshTTL.Seconds()),
-		},
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+		TokenType:    "Bearer",
+		ExpiresIn:    int64(s.accessTTL.Seconds()),
 	}, nil
 }
 

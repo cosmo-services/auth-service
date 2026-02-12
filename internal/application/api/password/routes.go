@@ -20,7 +20,7 @@ func NewPasswordRoutes(
 }
 
 func (r *PasswordRoutes) Setup() {
-	group := r.handler.Gin.Group("/api/v1")
+	group := r.handler.Gin.Group("/api/v2/auth/")
 
 	group.GET("/password/validate", r.pswdController.ValidatePassword)
 }

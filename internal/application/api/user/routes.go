@@ -24,18 +24,22 @@ func NewUserRoutes(
 }
 
 func (r *UserRoutes) Setup() {
-	api := r.handler.Gin.Group("/api/v1/user")
+	api := r.handler.Gin.Group("/api/v2/auth/user")
 
 	public := api.Group("/")
 	{
 		public.POST("/register", r.userController.Register)
-		public.GET("/activate", r.userController.Activate)
+		public.GET("/activate/confirm", r.userController.Activate)
 	}
 
 	protected := api.Group("/")
 	protected.Use(r.authMiddleware.Handler())
 	{
+		protected.GET("/profile", r.userController.GetUser)
+		protected.DELETE("/profile", r.userController.DeleteUser)
 		protected.POST("/activate/resend", r.userController.ResendActivation)
-		protected.DELETE("/delete", r.userController.DeleteUser)
+		protected.POST("/email/change", r.userController.ChangeEmail)
+		protected.POST("/password/change", r.userController.ChangePassword)
+		protected.POST("/username/change", r.userController.ChangeUsername)
 	}
 }
