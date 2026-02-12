@@ -35,3 +35,12 @@ func (u *User) Activate() error {
 
 	return nil
 }
+
+func (u *User) ChangeEmail(newEmail string) error {
+	if u.Email == newEmail {
+		return ErrEmailNotChanged
+	}
+	u.Email = newEmail
+	u.IsActive = false
+	return nil
+}

@@ -6,13 +6,13 @@ import (
 )
 
 // @title Cosmo Auth API
-// @version 1.0
+// @version 2.0
 // @securityDefinitions.apikey BearerAuth
 // @in header
 // @name Authorization
 // @security BearerAuth
 
-// @BasePath /api/v1/
+// @BasePath /api/v2/auth/
 func main() {
 	cmd.StartApp()
 }

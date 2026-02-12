@@ -1,13 +1,11 @@
 package password
 
-import (
-	"errors"
-)
-var (
-	ErrPasswordTooShort    = errors.New("password must be at least 8 characters long")
-	ErrPasswordNoUppercase = errors.New("password must contain at least one uppercase letter")
-	ErrPasswordNoLowercase = errors.New("password must contain at least one lowercase letter")
-	ErrPasswordNoDigit     = errors.New("password must contain at least one digit")
-	ErrPasswordNoSpecial   = errors.New("password must contain at least one special character")
-)
+import "errors"
 
+var (
+	ErrPasswordTooShort    = errors.New("PASSWORD_TOO_SHORT")
+	ErrPasswordNoUppercase = errors.New("PASSWORD_MISSING_UPPERCASE")
+	ErrPasswordNoLowercase = errors.New("PASSWORD_MISSING_LOWERCASE")
+	ErrPasswordNoDigit     = errors.New("PASSWORD_MISSING_DIGIT")
+	ErrPasswordNoSpecial   = errors.New("PASSWORD_MISSING_SPECIAL")
+)

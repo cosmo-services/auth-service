@@ -2,6 +2,8 @@ package tokens
 
 import "errors"
 
-var ErrInvalidToken = errors.New("invalid verification token")
-var ErrTokenExpired = errors.New("expired token")
-var ErrTokenNotFound = errors.New("token not found")
+var (
+	ErrInvalidToken  = errors.New("INVALID_TOKEN")
+	ErrTokenExpired  = errors.New("TOKEN_EXPIRED")
+	ErrTokenNotFound = errors.New("TOKEN_NOT_FOUND")
+)

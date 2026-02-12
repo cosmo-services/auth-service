@@ -26,7 +26,7 @@ func NewAuthService(
 func (s *AuthService) Login(username string, password string) (*TokenPair, error) {
 	user, err := s.userRepo.GetByUsername(username)
 	if err != nil {
-		return nil, err
+		return nil, ErrInvalidCredentials
 	}
 
 	if !s.pswdService.CheckPassword(password, user.PasswordHash) {

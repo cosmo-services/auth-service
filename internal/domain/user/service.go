@@ -51,6 +51,10 @@ func (s *UserService) Register(username string, password string, email string) e
 		return ErrEmailAlreadyTaken
 	}
 
+	if err := s.pswdService.ValidatePassword(password); err != nil {
+		return err
+	}
+
 	passwordHash, err := s.pswdService.HashPassword(password)
 	if err != nil {
 		return err
@@ -146,6 +150,44 @@ func (s *UserService) Delete(userId string) error {
 
 func (s *UserService) DeleteInactiveUsers() error {
 	if err := s.userRepo.DeleteInactiveUsers(time.Now().Add(-ActivateDuration)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *UserService) GetUser(userId string) (*User, error) {
+	user, err := s.userRepo.GetByID(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (s *UserService) ChangeEmail(userId string, newEmail string) error {
+	emailAvailable, err := s.userRepo.IsEmailAvailable(newEmail)
+	if err != nil {
+		return err
+	}
+	if !emailAvailable {
+		return ErrEmailAlreadyTaken
+	}
+
+	user, err := s.userRepo.GetByID(userId)
+	if err != nil {
+		return err
+	}
+
+	if err := user.ChangeEmail(newEmail); err != nil {
+		return err
+	}
+
+	if err := s.userRepo.Update(user); err != nil {
+		return err
+	}
+
+	if err := s.sendActivationEmail(user); err != nil {
 		return err
 	}
 

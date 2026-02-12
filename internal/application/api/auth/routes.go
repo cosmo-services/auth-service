@@ -20,7 +20,7 @@ func NewAuthRoutes(
 }
 
 func (r *AuthRoutes) Setup() {
-	group := r.handler.Gin.Group("/api/v1/")
+	group := r.handler.Gin.Group("/api/v2/auth/")
 	{
 		group.POST("/login", r.authController.Login)
 		group.POST("/refresh", r.authController.Refresh)

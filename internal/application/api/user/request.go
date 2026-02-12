@@ -5,3 +5,7 @@ type UserRegisterRequest struct {
 	Password string `json:"password"`
 	Email    string `json:"email"`
 }
+
+type ChangeEmailRequest struct {
+	NewEmail string `json:"new_email"`
+}
