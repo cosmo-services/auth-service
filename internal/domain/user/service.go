@@ -220,6 +220,23 @@ func (s *UserService) ChangePassword(userId string, newPassword string) error {
 	return nil
 }
 
+func (s *UserService) ChangeUsername(userId string, newUsername string) error {
+	user, err := s.userRepo.GetByID(userId)
+	if err != nil {
+		return err
+	}
+
+	if err := user.ChangeUsername(newUsername); err != nil {
+		return err
+	}
+
+	if err := s.userRepo.Update(user); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (s *UserService) sendActivationEmail(user *User) error {
 	token, err := s.tokenService.RequestToken(user.ID, tokens.PurposeVerifyEmail)
 	if err != nil {

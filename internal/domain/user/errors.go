@@ -10,4 +10,5 @@ var (
 	ErrActivateDeleted      = errors.New("CANNOT_ACTIVATE_DELETED_USER")
 	ErrAlreadyActivated     = errors.New("USER_ALREADY_ACTIVATED")
 	ErrEmailNotChanged      = errors.New("EMAIL_NOT_CHANGED")
+	ErrUsernameNotChanged   = errors.New("USERNAME_NOT_CHANGED")
 )

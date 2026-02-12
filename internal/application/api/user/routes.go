@@ -40,5 +40,6 @@ func (r *UserRoutes) Setup() {
 		protected.POST("/activate/resend", r.userController.ResendActivation)
 		protected.POST("/email/change", r.userController.ChangeEmail)
 		protected.POST("/password/change", r.userController.ChangePassword)
+		protected.POST("/username/change", r.userController.ChangeUsername)
 	}
 }

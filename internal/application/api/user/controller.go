@@ -227,3 +227,36 @@ func (controller *UserController) ChangePassword(ctx *gin.Context) {
 		"message": "password changed successfully",
 	})
 }
+
+// ChangeUsername godoc
+//
+// @Summary Change user username
+// @Description Change current username
+// @Tags user
+// @Produce json
+// @Security BearerAuth
+// @Param request body	ChangeUsernameRequest true "Change username request"
+// @Success 200 {object} map[string]string "Username changed successfully"
+// @Failure 400 {object} map[string]string "Username has not changed"
+// @Failure 401 {object} map[string]string "User unauthorized"
+// @Router /user/username/change [post]
+func (controller *UserController) ChangeUsername(ctx *gin.Context) {
+	userId := ctx.GetString("user_id")
+
+	var req *ChangeUsernameRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		controller.logger.Error(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+	}
+
+	if err := controller.userService.ChangeUsername(userId, req.Newusername); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "username changed successfully",
+	})
+}

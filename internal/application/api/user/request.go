@@ -13,3 +13,7 @@ type ChangeEmailRequest struct {
 type ChangePasswordRequest struct {
 	NewPassword string `json:"new_password"`
 }
+
+type ChangeUsernameRequest struct {
+	Newusername string `json:"new_username"`
+}

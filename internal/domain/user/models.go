@@ -49,3 +49,11 @@ func (u *User) ChangePassword(newPasswordHash string) error {
 	u.PasswordHash = newPasswordHash
 	return nil
 }
+
+func (u *User) ChangeUsername(newUsername string) error {
+	if u.Username == newUsername {
+		return ErrUsernameNotChanged
+	}
+	u.Username = newUsername
+	return nil
+}
