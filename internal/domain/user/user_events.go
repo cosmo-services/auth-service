@@ -2,11 +2,11 @@ package user
 
 import "time"
 
-type UserCreatedEvent struct {
-	UserID    string    `json:"user_id"`
-	Username  string    `json:"username"`
-	Email     string    `json:"email"`
-	CreatedAt time.Time `json:"created_at"`
+type UserRegistredEvent struct {
+	UserID      string    `json:"user_id"`
+	Username    string    `json:"username"`
+	Email       string    `json:"email"`
+	RegistredAt time.Time `json:"registred_at"`
 }
 
 type UserActivateEvent struct {

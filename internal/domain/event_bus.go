@@ -8,8 +8,8 @@ type EventBus struct {
 	messageHandlers map[string][]func(event Event) any
 }
 
-func NewEventBus() EventBus {
-	return EventBus{
+func NewEventBus() *EventBus {
+	return &EventBus{
 		messageHandlers: make(map[string][]func(event Event) any),
 	}
 }
@@ -21,7 +21,7 @@ func (bus *EventBus) On(name string, handler func(event Event) any) {
 		bus.messageHandlers[name] = []func(event Event) any{handler}
 	}
 }
-func (bus EventBus) Emit(name string, event Event) {
+func (bus *EventBus) Emit(name string, event Event) {
 	if handlers, ok := bus.messageHandlers[name]; ok {
 		for _, handler := range handlers {
 			handler(event)
