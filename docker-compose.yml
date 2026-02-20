@@ -31,7 +31,7 @@ services:
       - PG_HOST=${PG_HOST}
       - PG_PORT=${PG_PORT}
     depends_on:
-      - postgres
+      - auth_db
     volumes:
       - go-modules:/go/pkg/mod
       - ./uploads:/uploads
@@ -39,7 +39,7 @@ services:
     networks:
       - app-network
 
-  postgres:
+  auth_db:
     image: postgres:15
     env_file:
       - .env
@@ -51,7 +51,7 @@ services:
     ports:
       - "${PG_PORT}:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - auth_db:/var/lib/postgresql/data
       - ./init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql:ro
     restart: unless-stopped
     networks:
@@ -63,8 +63,7 @@ services:
       retries: 5
 
 volumes:
-  mongodb_data:
-  postgres_data:
+  auth_db_data:
   go-modules:
 
 networks:

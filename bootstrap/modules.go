@@ -4,6 +4,7 @@ import (
 	"main/internal/application/api"
 	"main/internal/application/jobs"
 	"main/internal/config"
+	"main/internal/domain"
 	"main/pkg"
 
 	auth_infrastructure "main/internal/infrastructure/auth"
@@ -28,6 +29,7 @@ import (
 var CommonModules = fx.Options(
 	config.Module,
 	pkg.Module,
+	domain.Module,
 
 	password_infrastructure.Module,
 	user_infrastructure.Module,

@@ -126,11 +126,6 @@ func (s *UserService) Activate(tokenStr string) error {
 }
 
 func (s *UserService) Delete(userId string) error {
-	user, err := s.userRepo.GetByID(userId)
-	if err != nil {
-		return err
-	}
-
 	if err := s.tokenService.RevokeAllUserTokens(userId); err != nil {
 		return err
 	}
@@ -139,10 +134,8 @@ func (s *UserService) Delete(userId string) error {
 		return err
 	}
 
-	if user.IsActive {
-		if err := s.publisher.UserDeleted(userId); err != nil {
-			return err
-		}
+	if err := s.publisher.UserDeleted(userId); err != nil {
+		return err
 	}
 
 	return nil
@@ -221,6 +214,14 @@ func (s *UserService) ChangePassword(userId string, newPassword string) error {
 }
 
 func (s *UserService) ChangeUsername(userId string, newUsername string) error {
+	usernameAvailable, err := s.userRepo.IsUsernameAvailable(newUsername)
+	if err != nil {
+		return err
+	}
+	if !usernameAvailable {
+		return ErrUsernameAlreadyTaken
+	}
+
 	user, err := s.userRepo.GetByID(userId)
 	if err != nil {
 		return err

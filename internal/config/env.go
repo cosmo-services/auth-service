@@ -26,6 +26,9 @@ type Env struct {
 	GmailSMTP string `mapstructure:"GMAIL_SMTP"`
 	AppDomain string `mapstructure:"APP_DOMAIN"`
 
+	NatsHost string `mapstructure:"NATS_HOST"`
+	NatsPort string `mapstructure:"NATS_PORT"`
+
 	JwtSecret     string        `mapstructure:"JWT_SECRET"`
 	JwtAccessTTL  time.Duration `mapstructure:"JWT_ACCESS_TTL"`
 	JwtRefreshTTL time.Duration `mapstructure:"JWT_REFRESH_TTL"`
@@ -36,6 +39,8 @@ type Env struct {
 
 	ClearExpiredTokensTTL  time.Duration `mapstructure:"CLEAR_EXP_TOKENS_TTL"`
 	DeleteInactiveUsersTTL time.Duration `mapstructure:"DEL_INACTIVE_TTL"`
+
+	MigrationPath string `mapstructure:"MIGRATION_PATH"`
 
 	AllowedOrigins []string `mapstructure:"ALLOWED_ORIGINS"`
 }
@@ -87,9 +92,14 @@ func (e *Env) bindEnv() {
 	e.GmailSMTP = os.Getenv("GMAIL_SMTP")
 	e.AppDomain = os.Getenv("APP_DOMAIN")
 
+	e.NatsHost = os.Getenv("NATS_HOST")
+	e.NatsPort = os.Getenv("NATS_PORT")
+
 	e.JwtSecret = os.Getenv("JWT_SECRET")
 
 	e.ApiActivationRoute = os.Getenv("API_ACTIVATION_ROUTE")
+
+	e.MigrationPath = os.Getenv("MIGRATION_PATH")
 
 	e.TemplatesDir = os.Getenv("TEMPLATES_DIR")
 
