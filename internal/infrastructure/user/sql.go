@@ -42,6 +42,7 @@ const (
 		DELETE FROM users 
 		WHERE is_active = false 
 		AND created_at < $1
+		RETURNING id
 	`
 
 	checkEmailAvailabilityQuery = `

@@ -151,10 +151,17 @@ func (s *UserService) Delete(userId string) error {
 	return nil
 }
 
-// TODO: emit user.deleted event for each user
 func (s *UserService) DeleteInactiveUsers() error {
-	if err := s.userRepo.DeleteInactiveUsers(time.Now().Add(-ActivateDuration)); err != nil {
+	usersId, err := s.userRepo.DeleteInactiveUsers(time.Now().Add(-ActivateDuration))
+	if err != nil {
 		return err
+	}
+
+	for _, userId := range usersId {
+		s.eventBus.Emit("user.deleted", UserDeleteEvent{
+			UserID:    userId,
+			DeletedAt: time.Now(),
+		})
 	}
 
 	return nil
