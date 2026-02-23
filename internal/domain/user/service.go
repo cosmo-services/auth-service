@@ -80,7 +80,7 @@ func (s *UserService) Register(username string, password string, email string) e
 		return err
 	}
 
-	s.eventBus.Emit("user.registred", UserRegistredEvent{
+	s.eventBus.Emit("user.registered", UserRegistredEvent{
 		UserID:      user.ID,
 		Username:    user.Username,
 		Email:       user.Email,

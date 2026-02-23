@@ -28,6 +28,8 @@ type Env struct {
 
 	NatsHost string `mapstructure:"NATS_HOST"`
 	NatsPort string `mapstructure:"NATS_PORT"`
+	NatsName string `mapstructure:"NATS_NAME"`
+	NatsChan string `mapstructure:"NATS_CHAN"`
 
 	JwtSecret     string        `mapstructure:"JWT_SECRET"`
 	JwtAccessTTL  time.Duration `mapstructure:"JWT_ACCESS_TTL"`
@@ -94,6 +96,8 @@ func (e *Env) bindEnv() {
 
 	e.NatsHost = os.Getenv("NATS_HOST")
 	e.NatsPort = os.Getenv("NATS_PORT")
+	e.NatsName = os.Getenv("NATS_NAME")
+	e.NatsChan = os.Getenv("NATS_CHAN")
 
 	e.JwtSecret = os.Getenv("JWT_SECRET")
 

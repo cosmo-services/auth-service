@@ -10,12 +10,12 @@ import (
 	"github.com/nats-io/nats.go"
 )
 
-type Nats struct {
+type NatsClient struct {
 	*nats.Conn
 	JS nats.JetStreamContext
 }
 
-func NewNats(logger Logger, env config.Env) *Nats {
+func NewNatsClient(logger Logger, env config.Env) *NatsClient {
 	connStr := fmt.Sprintf("nats://%s:%s", env.NatsHost, env.NatsPort)
 	logger.Info(fmt.Sprintf("Connecting to NATS at %s", connStr))
 
@@ -53,13 +53,48 @@ func NewNats(logger Logger, env config.Env) *Nats {
 	}
 	logger.Info("Successfully initialized JetStream")
 
-	return &Nats{
+	logger.Info(fmt.Sprintf("Checking if stream %s exists...", env.NatsName))
+
+	streamInfo, err := js.StreamInfo(env.NatsName)
+	if err != nil {
+		logger.Info(fmt.Sprintf("Stream %s does not exist, creating...", env.NatsName))
+
+		_, err = js.AddStream(&nats.StreamConfig{
+			Name:        env.NatsName,
+			Description: "Events from auth microservice",
+			Subjects: []string{
+				env.NatsChan + ".>",
+			},
+			Storage:   nats.FileStorage,
+			Retention: nats.InterestPolicy,
+			MaxAge:    time.Hour * 24 * 7,
+			MaxBytes:  1024 * 1024 * 1024,
+			Discard:   nats.DiscardOld,
+			MaxMsgs:   1000000,
+			Replicas:  1,
+		})
+
+		if err != nil {
+			logger.Fatalf("Failed to create stream %s: %v", env.NatsName, err)
+		}
+
+		logger.Infof("Stream %s created successfully", env.NatsName)
+	} else {
+		logger.Infof("Stream %s already exists", env.NatsName)
+		logger.Infof("  Messages: %d", streamInfo.State.Msgs)
+		logger.Infof("  Bytes: %d", streamInfo.State.Bytes)
+		logger.Infof("  First sequence: %d", streamInfo.State.FirstSeq)
+		logger.Infof("  Last sequence: %d", streamInfo.State.LastSeq)
+		logger.Infof("  Subjects: %v", streamInfo.Config.Subjects)
+	}
+
+	return &NatsClient{
 		Conn: nc,
 		JS:   js,
 	}
 }
 
-func (n *Nats) Close() error {
+func (n *NatsClient) Close() error {
 	if n.Conn != nil && !n.Conn.IsClosed() {
 		n.Conn.Drain()
 		n.Conn.Close()
@@ -67,7 +102,7 @@ func (n *Nats) Close() error {
 	return nil
 }
 
-func (n *Nats) PublishJSON(ctx context.Context, subject string, data interface{}) (*nats.PubAck, error) {
+func (n *NatsClient) PublishJSON(ctx context.Context, subject string, data interface{}) (*nats.PubAck, error) {
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal JSON: %w", err)
@@ -80,16 +115,16 @@ func (n *Nats) PublishJSON(ctx context.Context, subject string, data interface{}
 	return ack, nil
 }
 
-func (n *Nats) Subscribe(subject string, handler func(msg *nats.Msg) error) (*nats.Subscription, error) {
+func (n *NatsClient) Subscribe(stream string, subject string, handler func(msg *nats.Msg) error) (*nats.Subscription, error) {
 	return n.JS.Subscribe(subject, func(msg *nats.Msg) {
 		if err := handler(msg); err != nil {
 			msg.NakWithDelay(time.Minute)
 		} else {
 			msg.Ack()
 		}
-	}, nats.ManualAck())
+	}, nats.ManualAck(), nats.BindStream(stream))
 }
 
-func (n *Nats) SubscribePull(subject, consumer, stream string) (*nats.Subscription, error) {
+func (n *NatsClient) SubscribePull(subject, consumer, stream string) (*nats.Subscription, error) {
 	return n.JS.PullSubscribe(subject, consumer, nats.BindStream(stream))
 }

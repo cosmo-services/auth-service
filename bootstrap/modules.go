@@ -18,6 +18,8 @@ import (
 	swagger_api "main/internal/application/api/swagger"
 	user_api "main/internal/application/api/user"
 
+	nats "main/internal/application/nats"
+
 	auth_domain "main/internal/domain/auth"
 	password_domain "main/internal/domain/password"
 	tokens_domain "main/internal/domain/tokens"
@@ -38,6 +40,7 @@ var CommonModules = fx.Options(
 
 	api.Module,
 	jobs.Module,
+	nats.Module,
 	health_api.Module,
 	swagger_api.Module,
 	user_api.Module,
