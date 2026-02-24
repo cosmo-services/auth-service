@@ -53,41 +53,6 @@ func NewNatsClient(logger Logger, env config.Env) *NatsClient {
 	}
 	logger.Info("Successfully initialized JetStream")
 
-	logger.Info(fmt.Sprintf("Checking if stream %s exists...", env.NatsName))
-
-	streamInfo, err := js.StreamInfo(env.NatsName)
-	if err != nil {
-		logger.Info(fmt.Sprintf("Stream %s does not exist, creating...", env.NatsName))
-
-		_, err = js.AddStream(&nats.StreamConfig{
-			Name:        env.NatsName,
-			Description: "Events from auth microservice",
-			Subjects: []string{
-				env.NatsChan + ".>",
-			},
-			Storage:   nats.FileStorage,
-			Retention: nats.InterestPolicy,
-			MaxAge:    time.Hour * 24 * 7,
-			MaxBytes:  1024 * 1024 * 1024,
-			Discard:   nats.DiscardOld,
-			MaxMsgs:   1000000,
-			Replicas:  1,
-		})
-
-		if err != nil {
-			logger.Fatalf("Failed to create stream %s: %v", env.NatsName, err)
-		}
-
-		logger.Infof("Stream %s created successfully", env.NatsName)
-	} else {
-		logger.Infof("Stream %s already exists", env.NatsName)
-		logger.Infof("  Messages: %d", streamInfo.State.Msgs)
-		logger.Infof("  Bytes: %d", streamInfo.State.Bytes)
-		logger.Infof("  First sequence: %d", streamInfo.State.FirstSeq)
-		logger.Infof("  Last sequence: %d", streamInfo.State.LastSeq)
-		logger.Infof("  Subjects: %v", streamInfo.Config.Subjects)
-	}
-
 	return &NatsClient{
 		Conn: nc,
 		JS:   js,

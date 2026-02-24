@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"main/bootstrap"
-	"time"
 
 	"context"
 
@@ -30,8 +29,6 @@ func SetupApp(
 	lc.Append(fx.Hook{
 		OnStart: func(startCtx context.Context) error {
 			go func() {
-				time.Sleep(5 * time.Second)
-
 				nats.SetupPublishers()
 			}()
 
