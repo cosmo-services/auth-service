@@ -9,7 +9,7 @@ type UserRepository interface {
 	GetByUsername(username string) (*User, error)
 	Update(user *User) error
 	Delete(userID string) error
-	DeleteInactiveUsers(before time.Time) error
+	DeleteInactiveUsers(before time.Time) ([]string, error)
 	IsEmailAvailable(email string) (bool, error)
 	IsUsernameAvailable(username string) (bool, error)
 }

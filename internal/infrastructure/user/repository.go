@@ -155,13 +155,26 @@ func (r *userRepository) Delete(userID string) error {
 	return nil
 }
 
-func (r *userRepository) DeleteInactiveUsers(before time.Time) error {
-	_, err := r.db.Exec(deleteInactiveUsersQuery, before.UTC())
+func (r *userRepository) DeleteInactiveUsers(before time.Time) ([]string, error) {
+	rows, err := r.db.Query(deleteInactiveUsersQuery, before.UTC())
 	if err != nil {
-		return fmt.Errorf("failed to delete inactive users: %w", err)
+		return nil, fmt.Errorf("failed to delete inactive users: %w", err)
+	}
+	defer rows.Close()
+
+	var deletedUsersId []string
+
+	for rows.Next() {
+		var id string
+
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+
+		deletedUsersId = append(deletedUsersId, id)
 	}
 
-	return nil
+	return deletedUsersId, nil
 }
 
 func (r *userRepository) IsEmailAvailable(email string) (bool, error) {

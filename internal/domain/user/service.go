@@ -1,6 +1,7 @@
 package user
 
 import (
+	"main/internal/domain"
 	"main/internal/domain/password"
 	"main/internal/domain/tokens"
 	"time"
@@ -14,7 +15,7 @@ type UserService struct {
 	userRepo     UserRepository
 	pswdService  *password.PasswordService
 	tokenService *tokens.TokenService
-	publisher    Publisher
+	eventBus     *domain.EventBus
 	emailService EmailService
 }
 
@@ -22,15 +23,15 @@ func NewUserService(
 	userRepo UserRepository,
 	pswdService *password.PasswordService,
 	tokenService *tokens.TokenService,
-	publisher Publisher,
+	eventBus *domain.EventBus,
 	emailService EmailService,
 ) *UserService {
 	return &UserService{
 		userRepo:     userRepo,
 		pswdService:  pswdService,
 		tokenService: tokenService,
-		publisher:    publisher,
 		emailService: emailService,
+		eventBus:     eventBus,
 	}
 }
 
@@ -79,6 +80,13 @@ func (s *UserService) Register(username string, password string, email string) e
 		return err
 	}
 
+	s.eventBus.Emit("user.registered", UserRegistredEvent{
+		UserID:      user.ID,
+		Username:    user.Username,
+		Email:       user.Email,
+		RegistredAt: user.CreatedAt,
+	})
+
 	return nil
 }
 
@@ -118,19 +126,15 @@ func (s *UserService) Activate(tokenStr string) error {
 		return err
 	}
 
-	if err := s.publisher.UserActivated(token.UserID); err != nil {
-		return err
-	}
+	s.eventBus.Emit("user.activated", UserActivateEvent{
+		UserID:      user.ID,
+		ActivatedAt: time.Now(),
+	})
 
 	return nil
 }
 
 func (s *UserService) Delete(userId string) error {
-	user, err := s.userRepo.GetByID(userId)
-	if err != nil {
-		return err
-	}
-
 	if err := s.tokenService.RevokeAllUserTokens(userId); err != nil {
 		return err
 	}
@@ -139,18 +143,25 @@ func (s *UserService) Delete(userId string) error {
 		return err
 	}
 
-	if user.IsActive {
-		if err := s.publisher.UserDeleted(userId); err != nil {
-			return err
-		}
-	}
+	s.eventBus.Emit("user.deleted", UserDeleteEvent{
+		UserID:    userId,
+		DeletedAt: time.Now(),
+	})
 
 	return nil
 }
 
 func (s *UserService) DeleteInactiveUsers() error {
-	if err := s.userRepo.DeleteInactiveUsers(time.Now().Add(-ActivateDuration)); err != nil {
+	usersId, err := s.userRepo.DeleteInactiveUsers(time.Now().Add(-ActivateDuration))
+	if err != nil {
 		return err
+	}
+
+	for _, userId := range usersId {
+		s.eventBus.Emit("user.deleted", UserDeleteEvent{
+			UserID:    userId,
+			DeletedAt: time.Now(),
+		})
 	}
 
 	return nil
@@ -191,6 +202,12 @@ func (s *UserService) ChangeEmail(userId string, newEmail string) error {
 		return err
 	}
 
+	s.eventBus.Emit("user.email.changed", UserChangeEmailEvent{
+		UserID:    user.ID,
+		NewEmail:  newEmail,
+		ChangedAt: time.Now(),
+	})
+
 	return nil
 }
 
@@ -221,6 +238,14 @@ func (s *UserService) ChangePassword(userId string, newPassword string) error {
 }
 
 func (s *UserService) ChangeUsername(userId string, newUsername string) error {
+	usernameAvailable, err := s.userRepo.IsUsernameAvailable(newUsername)
+	if err != nil {
+		return err
+	}
+	if !usernameAvailable {
+		return ErrUsernameAlreadyTaken
+	}
+
 	user, err := s.userRepo.GetByID(userId)
 	if err != nil {
 		return err
@@ -233,6 +258,12 @@ func (s *UserService) ChangeUsername(userId string, newUsername string) error {
 	if err := s.userRepo.Update(user); err != nil {
 		return err
 	}
+
+	s.eventBus.Emit("user.username.changed", UserChangeUsernameEvent{
+		UserID:      user.ID,
+		NewUsername: user.Username,
+		ChangedAt:   time.Now(),
+	})
 
 	return nil
 }

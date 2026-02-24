@@ -198,7 +198,7 @@ func (controller *UserController) ChangeEmail(ctx *gin.Context) {
 // ChangePassword godoc
 //
 // @Summary Change user password
-// @Description Change current password
+// @Description Change current user password
 // @Tags user
 // @Produce json
 // @Security BearerAuth

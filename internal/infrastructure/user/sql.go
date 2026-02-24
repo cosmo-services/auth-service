@@ -22,7 +22,7 @@ const (
 	getUserByUsernameQuery = `
 		SELECT id, username, password_hash, email, is_active, is_deleted, created_at, updated_at
 		FROM users 
-		WHERE username = $1
+		WHERE username = $1 AND is_deleted = false
 	`
 
 	updateUserQuery = `
@@ -42,6 +42,7 @@ const (
 		DELETE FROM users 
 		WHERE is_active = false 
 		AND created_at < $1
+		RETURNING id
 	`
 
 	checkEmailAvailabilityQuery = `
