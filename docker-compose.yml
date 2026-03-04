@@ -1,35 +1,12 @@
 version: '3.8'
 
 services:
-  migrate:
-    image: migrate/migrate
-    env_file:
-      - .env
-    volumes:
-      - ./migrations:/migrations
-    command: [
-      "-path", "/migrations",
-      "-database", "postgres://${PG_USER}:${PG_PASS}@postgres:5432/${PG_NAME}?sslmode=disable",
-      "up"
-    ]
-    depends_on:
-      postgres:
-        condition: service_healthy
-    restart: "no"
-    networks:
-      - app-network
-    
   api:
     build: .
     ports:
       - "${PORT}:${PORT}"
     env_file:
       - .env
-    environment:
-      - DB_HOST=${DB_HOST}
-      - DB_PORT=${DB_PORT}
-      - PG_HOST=${PG_HOST}
-      - PG_PORT=${PG_PORT}
     depends_on:
       - auth_db
     volumes:
@@ -51,8 +28,7 @@ services:
     ports:
       - "${PG_PORT}:5432"
     volumes:
-      - auth_db:/var/lib/postgresql/data
-      - ./init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql:ro
+      - auth-db_data:/var/lib/postgresql/data
     restart: unless-stopped
     networks:
       - app-network
@@ -63,7 +39,7 @@ services:
       retries: 5
 
 volumes:
-  auth_db_data:
+  auth-db_data:
   go-modules:
 
 networks:

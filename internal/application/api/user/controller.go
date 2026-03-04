@@ -121,7 +121,7 @@ func (controller *UserController) ResendActivation(ctx *gin.Context) {
 // @Success 200 {object} map[string]string "User account deleted successfully"
 // @Failure 400 {object} map[string]string "Invalid user ID or deletion failed"
 // @Failure 401 {object} map[string]string "User not authenticated"
-// @Router /user/profile [delete]
+// @Router /user [delete]
 func (controller *UserController) DeleteUser(ctx *gin.Context) {
 	userId := ctx.GetString("user_id")
 	if err := controller.userService.Delete(userId); err != nil {
@@ -146,7 +146,7 @@ func (controller *UserController) DeleteUser(ctx *gin.Context) {
 // @Failure 400 {object} map[string]string "Invalid user ID or deletion failed"
 // @Failure 404 {object} map[string]string "User not found"
 // @Failure 401 {object} map[string]string "User unauthorized"
-// @Router /user/profile [get]
+// @Router /user [get]
 func (controller *UserController) GetUser(ctx *gin.Context) {
 	userId := ctx.GetString("user_id")
 	user, err := controller.userService.GetUser(userId)

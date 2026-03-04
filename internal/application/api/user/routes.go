@@ -35,11 +35,11 @@ func (r *UserRoutes) Setup() {
 	protected := api.Group("/")
 	protected.Use(r.authMiddleware.Handler())
 	{
-		protected.GET("/profile", r.userController.GetUser)
-		protected.DELETE("/profile", r.userController.DeleteUser)
 		protected.POST("/activate/resend", r.userController.ResendActivation)
 		protected.POST("/email/change", r.userController.ChangeEmail)
 		protected.POST("/password/change", r.userController.ChangePassword)
 		protected.POST("/username/change", r.userController.ChangeUsername)
+		protected.GET("/", r.userController.GetUser)
+		protected.DELETE("/", r.userController.DeleteUser)
 	}
 }
