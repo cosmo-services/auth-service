@@ -194,6 +194,10 @@ func (s *UserService) ChangeEmail(userId string, newEmail string) error {
 		return err
 	}
 
+	if err := user.Deactivate(); err != nil {
+		return err
+	}
+
 	if err := s.userRepo.Update(user); err != nil {
 		return err
 	}
@@ -206,6 +210,11 @@ func (s *UserService) ChangeEmail(userId string, newEmail string) error {
 		UserID:    user.ID,
 		NewEmail:  newEmail,
 		ChangedAt: time.Now(),
+	})
+
+	s.eventBus.Emit("user.deactivated", UserDeactivateEvent{
+		UserID:        user.ID,
+		DeactivatedAt: time.Now(),
 	})
 
 	return nil

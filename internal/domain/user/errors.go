@@ -7,7 +7,7 @@ var (
 	ErrNoPermission         = errors.New("NO_PERMISSION")
 	ErrUsernameAlreadyTaken = errors.New("USERNAME_ALREADY_TAKEN")
 	ErrEmailAlreadyTaken    = errors.New("EMAIL_ALREADY_TAKEN")
-	ErrActivateDeleted      = errors.New("CANNOT_ACTIVATE_DELETED_USER")
+	ErrUserDeleted          = errors.New("USER_DELETED")
 	ErrAlreadyActivated     = errors.New("USER_ALREADY_ACTIVATED")
 	ErrEmailNotChanged      = errors.New("EMAIL_NOT_CHANGED")
 	ErrUsernameNotChanged   = errors.New("USERNAME_NOT_CHANGED")

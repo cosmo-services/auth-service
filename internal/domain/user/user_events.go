@@ -14,6 +14,11 @@ type UserActivateEvent struct {
 	ActivatedAt time.Time `json:"activated_at"`
 }
 
+type UserDeactivateEvent struct {
+	UserID        string    `json:"user_id"`
+	DeactivatedAt time.Time `json:"deactivated_at"`
+}
+
 type UserDeleteEvent struct {
 	UserID    string    `json:"user_id"`
 	DeletedAt time.Time `json:"deleted_at"`

@@ -52,6 +52,20 @@ func (p *UserEventHandler) UserActivated(event domain.Event) error {
 	return nil
 }
 
+func (p *UserEventHandler) UserDeactivated(event domain.Event) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	_, err := p.natsClient.PublishJSON(ctx, "auth.user.deactivated", event)
+	if err != nil {
+		p.logger.Error(err)
+
+		return err
+	}
+
+	return nil
+}
+
 func (p *UserEventHandler) UserDeleted(event domain.Event) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
