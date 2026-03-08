@@ -23,11 +23,8 @@ func NewNats(
 
 func (n *Nats) SetupPublishers() {
 	n.eventBus.On("user.registered", n.userEventHandler.UserRegistered)
-	n.eventBus.On("user.activated", n.userEventHandler.UserActivated)
-	n.eventBus.On("user.deactivated", n.userEventHandler.UserDeactivated)
 	n.eventBus.On("user.deleted", n.userEventHandler.UserDeleted)
-	n.eventBus.On("user.email.changed", n.userEventHandler.UserEmailChanged)
-	n.eventBus.On("user.username.changed", n.userEventHandler.UserUsernameChanged)
+	n.eventBus.On("user.updated", n.userEventHandler.UserUpdated)
 }
 
 var Module = fx.Options(

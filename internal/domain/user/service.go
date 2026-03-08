@@ -126,9 +126,12 @@ func (s *UserService) Activate(tokenStr string) error {
 		return err
 	}
 
-	s.eventBus.Emit("user.activated", UserActivateEvent{
-		UserID:      user.ID,
-		ActivatedAt: time.Now(),
+	s.eventBus.Emit("user.updated", UserUpdatedEvent{
+		UserID:    user.ID,
+		Username:  user.Username,
+		IsActive:  user.IsActive,
+		Email:     user.Email,
+		UpdatedAt: time.Now(),
 	})
 
 	return nil
@@ -206,15 +209,12 @@ func (s *UserService) ChangeEmail(userId string, newEmail string) error {
 		return err
 	}
 
-	s.eventBus.Emit("user.email.changed", UserChangeEmailEvent{
+	s.eventBus.Emit("user.updated", UserUpdatedEvent{
 		UserID:    user.ID,
-		NewEmail:  newEmail,
-		ChangedAt: time.Now(),
-	})
-
-	s.eventBus.Emit("user.deactivated", UserDeactivateEvent{
-		UserID:        user.ID,
-		DeactivatedAt: time.Now(),
+		Username:  user.Username,
+		IsActive:  user.IsActive,
+		Email:     user.Email,
+		UpdatedAt: time.Now(),
 	})
 
 	return nil
@@ -268,10 +268,12 @@ func (s *UserService) ChangeUsername(userId string, newUsername string) error {
 		return err
 	}
 
-	s.eventBus.Emit("user.username.changed", UserChangeUsernameEvent{
-		UserID:      user.ID,
-		NewUsername: user.Username,
-		ChangedAt:   time.Now(),
+	s.eventBus.Emit("user.updated", UserUpdatedEvent{
+		UserID:    user.ID,
+		Username:  user.Username,
+		IsActive:  user.IsActive,
+		Email:     user.Email,
+		UpdatedAt: time.Now(),
 	})
 
 	return nil
