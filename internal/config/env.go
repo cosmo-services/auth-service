@@ -11,8 +11,9 @@ import (
 )
 
 type Env struct {
-	AppEnv string `mapstructure:"APP_ENV"`
-	Port   string `mapstructure:"PORT"`
+	AppEnv   string `mapstructure:"APP_ENV"`
+	Port     string `mapstructure:"PORT"`
+	GrcpPort string `mapstructure:"GRCP_PORT"`
 
 	PGHost string `mapstructure:"PG_HOST"`
 	PGPort string `mapstructure:"PG_PORT"`
@@ -81,6 +82,7 @@ func NewEnv() Env {
 func (e *Env) bindEnv() {
 	e.AppEnv = os.Getenv("APP_ENV")
 	e.Port = os.Getenv("PORT")
+	e.GrcpPort = os.Getenv("GRCP_PORT")
 
 	e.PGHost = os.Getenv("PG_HOST")
 	e.PGPort = os.Getenv("PG_PORT")
