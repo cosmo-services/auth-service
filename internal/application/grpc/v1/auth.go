@@ -13,7 +13,7 @@ import (
 )
 
 type AuthHandler struct {
-	pb.UnimplementedSocialServiceServer
+	pb.UnimplementedAuthServiceServer
 
 	userService *user_domain.UserService
 }

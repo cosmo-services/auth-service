@@ -20,6 +20,8 @@ import (
 
 	nats "main/internal/application/nats"
 
+	grpc_v1 "main/internal/application/grpc/v1"
+
 	auth_domain "main/internal/domain/auth"
 	password_domain "main/internal/domain/password"
 	tokens_domain "main/internal/domain/tokens"
@@ -41,6 +43,7 @@ var CommonModules = fx.Options(
 	http.Module,
 	jobs.Module,
 	nats.Module,
+	grpc_v1.Module,
 	health_http.Module,
 	swagger_http.Module,
 	user_http.Module,
