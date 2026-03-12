@@ -26,15 +26,42 @@ func NewAuthHandler(
 	}
 }
 
-func (h *AuthHandler) GetUser(
+func (h *AuthHandler) GetUserById(
 	ctx context.Context,
-	req *pb.GetUserRequest,
+	req *pb.GetUserByIdRequest,
 ) (*pb.GetUserResponse, error) {
 	if req.UserId == "" {
 		return nil, status.Error(codes.InvalidArgument, "user_id is required")
 	}
 
-	p, err := h.userService.GetUser(req.UserId)
+	p, err := h.userService.GetUserById(req.UserId)
+	if err != nil {
+		if errors.Is(err, user_domain.ErrUserNotFound) {
+			return nil, status.Error(codes.NotFound, "user not found")
+		}
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &pb.GetUserResponse{
+		User: &pb.UserData{
+			Id:        p.ID,
+			Username:  p.Username,
+			Email:     p.Email,
+			IsActive:  p.IsActive,
+			CreatedAt: p.CreatedAt.Unix(),
+		},
+	}, nil
+}
+
+func (h *AuthHandler) GetUserByUsername(
+	ctx context.Context,
+	req *pb.GetUserByUsernameRequest,
+) (*pb.GetUserResponse, error) {
+	if req.Username == "" {
+		return nil, status.Error(codes.InvalidArgument, "username is required")
+	}
+
+	p, err := h.userService.GetUserByUsername(req.Username)
 	if err != nil {
 		if errors.Is(err, user_domain.ErrUserNotFound) {
 			return nil, status.Error(codes.NotFound, "user not found")

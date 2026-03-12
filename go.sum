@@ -24,6 +24,8 @@ github.com/cosmo-services/grpc-contracts v0.0.0-20260312101326-a3a5c2aa1412 h1:h
 github.com/cosmo-services/grpc-contracts v0.0.0-20260312101326-a3a5c2aa1412/go.mod h1:depQC6Zdba1lyBtSFOIlBLwzkg88avzwMG4VQ50OaNs=
 github.com/cosmo-services/grpc-contracts v1.0.1 h1:ykkJN1mMsw6l4wzkGGcf24AshVG20pFVmvf451tPzK8=
 github.com/cosmo-services/grpc-contracts v1.0.1/go.mod h1:KLqK8BwrjgV02afbJGK3jOWmWldp9JUpF13hXeq76xs=
+github.com/cosmo-services/grpc-contracts v1.0.2 h1:pkrO982ZXY/yauMa5pZUx0ipZG+CpUTP3l0xjTCZsGw=
+github.com/cosmo-services/grpc-contracts v1.0.2/go.mod h1:KLqK8BwrjgV02afbJGK3jOWmWldp9JUpF13hXeq76xs=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
