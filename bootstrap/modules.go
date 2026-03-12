@@ -1,7 +1,7 @@
 package bootstrap
 
 import (
-	"main/internal/application/api"
+	"main/internal/application/http"
 	"main/internal/application/jobs"
 	"main/internal/config"
 	"main/internal/domain"
@@ -12,13 +12,15 @@ import (
 	tokens_infrastructure "main/internal/infrastructure/tokens"
 	user_infrastructure "main/internal/infrastructure/user"
 
-	auth_api "main/internal/application/api/auth"
-	health_api "main/internal/application/api/health"
-	password_api "main/internal/application/api/password"
-	swagger_api "main/internal/application/api/swagger"
-	user_api "main/internal/application/api/user"
+	auth_http "main/internal/application/http/auth"
+	health_http "main/internal/application/http/health"
+	password_http "main/internal/application/http/password"
+	swagger_http "main/internal/application/http/swagger"
+	user_http "main/internal/application/http/user"
 
 	nats "main/internal/application/nats"
+
+	grpc_v1 "main/internal/application/grpc/v1"
 
 	auth_domain "main/internal/domain/auth"
 	password_domain "main/internal/domain/password"
@@ -38,14 +40,15 @@ var CommonModules = fx.Options(
 	auth_infrastructure.Module,
 	tokens_infrastructure.Module,
 
-	api.Module,
+	http.Module,
 	jobs.Module,
 	nats.Module,
-	health_api.Module,
-	swagger_api.Module,
-	user_api.Module,
-	auth_api.Module,
-	password_api.Module,
+	grpc_v1.Module,
+	health_http.Module,
+	swagger_http.Module,
+	user_http.Module,
+	auth_http.Module,
+	password_http.Module,
 
 	user_domain.Module,
 	password_domain.Module,

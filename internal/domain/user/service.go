@@ -126,9 +126,12 @@ func (s *UserService) Activate(tokenStr string) error {
 		return err
 	}
 
-	s.eventBus.Emit("user.activated", UserActivateEvent{
-		UserID:      user.ID,
-		ActivatedAt: time.Now(),
+	s.eventBus.Emit("user.updated", UserUpdatedEvent{
+		UserID:    user.ID,
+		Username:  user.Username,
+		IsActive:  user.IsActive,
+		Email:     user.Email,
+		UpdatedAt: time.Now(),
 	})
 
 	return nil
@@ -167,8 +170,17 @@ func (s *UserService) DeleteInactiveUsers() error {
 	return nil
 }
 
-func (s *UserService) GetUser(userId string) (*User, error) {
+func (s *UserService) GetUserById(userId string) (*User, error) {
 	user, err := s.userRepo.GetByID(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (s *UserService) GetUserByUsername(username string) (*User, error) {
+	user, err := s.userRepo.GetByUsername(username)
 	if err != nil {
 		return nil, err
 	}
@@ -194,6 +206,10 @@ func (s *UserService) ChangeEmail(userId string, newEmail string) error {
 		return err
 	}
 
+	if err := user.Deactivate(); err != nil {
+		return err
+	}
+
 	if err := s.userRepo.Update(user); err != nil {
 		return err
 	}
@@ -202,10 +218,12 @@ func (s *UserService) ChangeEmail(userId string, newEmail string) error {
 		return err
 	}
 
-	s.eventBus.Emit("user.email.changed", UserChangeEmailEvent{
+	s.eventBus.Emit("user.updated", UserUpdatedEvent{
 		UserID:    user.ID,
-		NewEmail:  newEmail,
-		ChangedAt: time.Now(),
+		Username:  user.Username,
+		IsActive:  user.IsActive,
+		Email:     user.Email,
+		UpdatedAt: time.Now(),
 	})
 
 	return nil
@@ -259,10 +277,12 @@ func (s *UserService) ChangeUsername(userId string, newUsername string) error {
 		return err
 	}
 
-	s.eventBus.Emit("user.username.changed", UserChangeUsernameEvent{
-		UserID:      user.ID,
-		NewUsername: user.Username,
-		ChangedAt:   time.Now(),
+	s.eventBus.Emit("user.updated", UserUpdatedEvent{
+		UserID:    user.ID,
+		Username:  user.Username,
+		IsActive:  user.IsActive,
+		Email:     user.Email,
+		UpdatedAt: time.Now(),
 	})
 
 	return nil
