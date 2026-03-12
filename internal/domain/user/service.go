@@ -170,8 +170,17 @@ func (s *UserService) DeleteInactiveUsers() error {
 	return nil
 }
 
-func (s *UserService) GetUser(userId string) (*User, error) {
+func (s *UserService) GetUserById(userId string) (*User, error) {
 	user, err := s.userRepo.GetByID(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (s *UserService) GetUserByUsername(username string) (*User, error) {
+	user, err := s.userRepo.GetByUsername(username)
 	if err != nil {
 		return nil, err
 	}

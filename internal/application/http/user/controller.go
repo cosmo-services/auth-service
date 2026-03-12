@@ -149,7 +149,7 @@ func (controller *UserController) DeleteUser(ctx *gin.Context) {
 // @Router /user [get]
 func (controller *UserController) GetUser(ctx *gin.Context) {
 	userId := ctx.GetString("user_id")
-	user, err := controller.userService.GetUser(userId)
+	user, err := controller.userService.GetUserById(userId)
 	if err != nil {
 		if errors.Is(err, domain.ErrUserNotFound) {
 			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})

@@ -9,4 +9,5 @@ var Module = fx.Options(
 	fx.Provide(GetLogger),
 	fx.Provide(NewPostgresDatabase),
 	fx.Provide(NewNatsClient),
+	fx.Provide(NewGrpcServer),
 )
