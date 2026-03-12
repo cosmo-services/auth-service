@@ -9,7 +9,7 @@ import (
 
 	"main/pkg"
 
-	"main/internal/application/api"
+	"main/internal/application/http"
 	"main/internal/application/jobs"
 	"main/internal/application/nats"
 	"main/internal/config"
@@ -20,7 +20,7 @@ func SetupApp(
 	env config.Env,
 	logger pkg.Logger,
 	handler pkg.RequestHandler,
-	routes api.Routes,
+	routes http.Routes,
 	nats *nats.Nats,
 	workers jobs.Workers,
 ) {
